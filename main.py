@@ -4,6 +4,7 @@ from tabulate import tabulate
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.utils import get
 
 #from help_d import help_d
 #from music_d import music_d
@@ -57,7 +58,7 @@ async def echo(interaction: discord.Interaction):
 
 @bot.tree.command(name='help', description='Get a description of all the commands')
 async def help(interaction: discord.Interaction):
-    await interaction.response.send_message('```' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'], ['/echo <message>', 'Marl Karx quotes you.'], ['/manifest', 'Get the Manifest of the Communist Party for free!'], ['/choose <max>', 'Marl Karx chooses a random number from 1 to <max>.'], ['/ping <game>', 'Ping all users who are added to this game ping.'], ['/pingadd <game> <user>', 'Add a user to a specific game ping.'], ['/pingadd <game> <user>', 'Remove a user from a specific game ping.']]) + '```')
+    await interaction.response.send_message('```' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'], ['/echo <message>', 'Marl Karx quotes you.'], ['/manifest', 'Get the Manifest of the Communist Party for free!'], ['/choose <max>', 'Marl Karx chooses a random number from 1 to <max>.'], ['/ping <game>', 'Ping all users who are added to this game ping.'], ['/pingadd <game> <user>', 'Add a user to a specific game ping.'], ['/pingremove <game> <user>', 'Remove a user from a specific game ping.'], ['/pinglist <game>', 'List all users of a game ping.']]) + '```')
 
 @bot.tree.command(name='ping', description='Get the squad together')
 @app_commands.describe(game='game')
@@ -66,7 +67,7 @@ async def ping(interaction: discord.Interaction, game: discord.app_commands.Choi
     result = f"I hereby request that you come and play some **{game.name}** "
     for player in data['games'][game.value]['players']:
         result += f"<@{player}> "
-    await interaction.response.send_message(result)#f'I hereby request that you come and play some **{games.name}** <@{str(170953174117515264)}> <@{str(339456038145097728)}> <@{str(386836260326473739)}> <@{str(415531412037566474)}> <@{str(173723256044519424)}> <@{str(354264914715738123)}>')
+    await interaction.response.send_message(result)
 
 @bot.tree.command(name='pingadd', description='Add a user to a ping command')
 @app_commands.describe(game='game')
@@ -93,6 +94,19 @@ async def ping_remove(interaction: discord.Interaction, game: discord.app_comman
         await interaction.response.send_message(f"**{user.name}** was removed from the **{game.name}** ping")
     else:
         await interaction.response.send_message(f"**{user.name}** is not part of the **{game.name}** ping, cannot remove user")
+
+@bot.tree.command(name='pinglist', description='List all users of a game ping')
+@app_commands.describe(game='game')
+@app_commands.choices(game=game_choices)
+async def ping_list(interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
+    if len(data['games'][game.value]['players']) == 0:
+        await interaction.response.send_message(f"No users are pinged by the **{game.name}** ping")
+    else:
+        result = f"Users pinged by the **{game.name}** ping:\n"
+        for userid in data['games'][game.value]['players']:
+            u = get(bot.get_all_members(), id=userid)
+            result += f"**{u.display_name}**\n"
+        await interaction.response.send_message(result)
 
 @bot.event
 async def on_message(message):
