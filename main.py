@@ -23,7 +23,7 @@ config.close()
 async def on_ready():
     print(f'Bot with id: {bot.application_id} started running')
     i = 0
-    while i != len(data['games']) - 1:
+    while i < len(data['games']):
         game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
         i += 1
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
