@@ -26,12 +26,12 @@ async def on_ready():
     while i < len(data['games']):
         game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
         i += 1
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
 
     #contents = crawl_quotes(quote_url)
     #print(requests.get(quote_url).text)
@@ -46,10 +46,10 @@ async def quote(interaction: discord.Interaction):
     l_quote = quote
 
 @bot.tree.command(name='quoteadd', description='Extend Marl Karx\' quote collection')
-@app_commands.describe(quote='quote')
-async def quote(interaction: discord.Interaction, quote: str):
-    quotes.append(str)
-    await interaction.response.send_message(f"**{interaction.user.display_name}** added a quote")
+@app_commands.describe(message='message')
+async def quote(interaction: discord.Interaction, message: str):
+    quotes.append(message)
+    await interaction.response.send_message(f"**{interaction.user.display_name}** added a quote: *\"{message}\"*")
 
 @bot.tree.command(name='echo', description='Marl Karx quotes you')
 @app_commands.describe(message='message')
