@@ -1,3 +1,5 @@
+import asyncio
+import datetime
 import json
 import random
 from tabulate import tabulate
@@ -19,6 +21,24 @@ config = open('config.json')
 data = json.load(config)
 config.close()
 
+async def send_daily_quote():
+    now = datetime.datetime.now()
+    then = now + datetime.timedelta(days=1)
+    then.replace(hour=21, minute=0, second=0)
+    wait_time = (then - now).total_seconds()
+    await asyncio.sleep(wait_time)
+
+    channel = bot.get_channel(751907139425009694)
+    await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
+
+def pick_quote():
+    global l_quote
+    quote = random.randint(0, len(quotes) - 1)
+    while l_quote == quote:
+        quote = random.randint(0, len(quotes) - 1)
+    l_quote = quote
+    return quotes[quote]
+
 @bot.event
 async def on_ready():
     print(f'Bot with id: {bot.application_id} started running')
@@ -32,18 +52,14 @@ async def on_ready():
     except Exception as e:
         print(e)
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
+    await send_daily_quote()
 
     #contents = crawl_quotes(quote_url)
     #print(requests.get(quote_url).text)
 
 @bot.tree.command(name='quote', description='Marl Karx quotes Karl Marx')
 async def quote(interaction: discord.Interaction):
-    global l_quote
-    quote = random.randint(0, len(quotes) - 1)
-    while l_quote == quote:
-        quote = random.randint(0, len(quotes) - 1)
-    await interaction.response.send_message('*\"' + quotes[quote] + '\"*')
-    l_quote = quote
+    await interaction.response.send_message('*\"' + pick_quote() + '\"*')
 
 @bot.tree.command(name='quoteadd', description='Extend Marl Karx\' quote collection')
 @app_commands.describe(message='message')
@@ -149,7 +165,6 @@ async def on_message(message):
         await message.channel.send(x)
 
 bot.run(data['token'])
-
 #other stuff q
 
 #def crawl_quotes(url):
