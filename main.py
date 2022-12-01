@@ -80,7 +80,7 @@ async def ping_add(interaction: discord.Interaction, game: discord.app_commands.
         data['games'][game.value]['players'].append(user.id)
         json.dump(data, c)
         c.close()
-        await interaction.response.send_message(f"**{user.name}* was added to the **{game.name}** ping")
+        await interaction.response.send_message(f"**{user.name}** was added to the **{game.name}** ping")
 
 @bot.tree.command(name='pingremove', description='Remove a user from a ping command')
 @app_commands.describe(game='game')
