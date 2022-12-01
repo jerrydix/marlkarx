@@ -45,6 +45,12 @@ async def quote(interaction: discord.Interaction):
     await interaction.response.send_message('*\"' + quotes[quote] + '\"*')
     l_quote = quote
 
+@bot.tree.command(name='quoteadd', description='Extend Marl Karx\' quote collection')
+@app_commands.describe(quote='quote')
+async def quote(interaction: discord.Interaction, quote: str):
+    quotes.append(str)
+    await interaction.response.send_message(f"**{interaction.user.display_name}** added a quote")
+
 @bot.tree.command(name='echo', description='Marl Karx quotes you')
 @app_commands.describe(message='message')
 async def echo(interaction: discord.Interaction, message: str):
