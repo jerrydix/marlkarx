@@ -136,6 +136,15 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
         await interaction.response.send_message(result)
 
 @bot.event
+async def on_member_join(member: discord.Member):
+    await member.send(f"Welcome to {member.guild.name}, {member.name}!")
+    await bot.get_channel(170953505610137600).send(f"{member.display_name} has joined.")
+
+@bot.event
+async def on_member_remove(member: discord.Member):
+   await bot.get_channel(170953505610137600).send(f"{member.display_name} has left.")
+
+@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
