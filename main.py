@@ -39,6 +39,9 @@ def pick_quote():
     l_quote = quote
     return quotes[quote]
 
+def test_user_or_role(ctx):
+    return ctx.author.guild_permissions.administrator or ctx.author.guil
+
 @bot.event
 async def on_ready():
     print(f'Bot with id: {bot.application_id} started running')
@@ -92,6 +95,7 @@ async def ping(interaction: discord.Interaction, game: discord.app_commands.Choi
     await interaction.response.send_message(result)
 
 @bot.tree.command(name='pingadd', description='Add a user to a ping command')
+@commands.has_role('Government Official')
 @app_commands.describe(game='game')
 @app_commands.choices(game=game_choices)
 async def ping_add(interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
@@ -105,6 +109,7 @@ async def ping_add(interaction: discord.Interaction, game: discord.app_commands.
         await interaction.response.send_message(f"**{user.name}** was added to the **{game.name}** ping")
 
 @bot.tree.command(name='pingremove', description='Remove a user from a ping command')
+@commands.has_role('Government Official')
 @app_commands.describe(game='game')
 @app_commands.choices(game=game_choices)
 async def ping_remove(interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
