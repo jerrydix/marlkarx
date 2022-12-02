@@ -95,7 +95,7 @@ async def ping(interaction: discord.Interaction, game: discord.app_commands.Choi
     await interaction.response.send_message(result)
 
 @bot.tree.command(name='pingadd', description='Add a user to a ping command')
-@commands.has_role('Government Official')
+@app_commands.checks.has_role(781223345319706646)
 @app_commands.describe(game='game')
 @app_commands.choices(game=game_choices)
 async def ping_add(interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
@@ -109,7 +109,7 @@ async def ping_add(interaction: discord.Interaction, game: discord.app_commands.
         await interaction.response.send_message(f"**{user.name}** was added to the **{game.name}** ping")
 
 @bot.tree.command(name='pingremove', description='Remove a user from a ping command')
-@commands.has_role('Government Official')
+@app_commands.checks.has_role(781223345319706646)
 @app_commands.describe(game='game')
 @app_commands.choices(game=game_choices)
 async def ping_remove(interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
