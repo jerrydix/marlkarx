@@ -135,6 +135,12 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
             result += f"**{u.display_name}**\n"
         await interaction.response.send_message(result)
 
+@bot.tree.error
+async def role_error_catch(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.MissingRole):
+        await interaction.response.send_message('You are missing the role to execute this command')
+    else: raise error
+
 @bot.event
 async def on_member_join(member: discord.Member):
     await member.send(f"Welcome to {member.guild.name}, {member.name}!")
