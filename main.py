@@ -22,14 +22,11 @@ data = json.load(config)
 config.close()
 
 async def send_daily_quote():
-    now = datetime.datetime.now()
-    then = now + datetime.timedelta(days=1)
-    then.replace(hour=21, minute=0, second=0)
-    wait_time = (then - now).total_seconds()
-    await asyncio.sleep(wait_time)
-
-    channel = bot.get_channel(751907139425009694)
-    await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
+    while (True):
+        if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0 and datetime.datetime.now().time().second == 0):
+            channel = bot.get_channel(751907139425009694)
+            await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
+        await asyncio.sleep(15*60)
 
 def pick_quote():
     global l_quote
