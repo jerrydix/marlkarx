@@ -172,7 +172,7 @@ async def on_message(message):
             await message.channel.send(file=discord.File(fp, 'manifest_der_kommunistischen_partei.pdf'))
 
     if 'communism' in message.content:
-        await message.add_reaction('\N{THUMBS UP SIGN}')
+        await message.add_reaction('sickle')
 
     if message.content == prefix + 'help':
         await message.channel.send('```' + tabulate([['.quote', 'Marl Karx quotes Karl Marx.'], ['.echo <message>', 'Marl Karx quotes you.'], ['.manifest', 'Get the Manifest of the Communist Party for free!'], ['.choose <max>', 'Marl Karx chooses a random number from 1 to <max>.']]) + '```')
