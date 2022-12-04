@@ -23,7 +23,7 @@ config.close()
 
 async def send_daily_quote():
     while (True):
-        if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0 and datetime.datetime.now().time().second == 0):
+        if (datetime.datetime.now().time().hour == 0 and datetime.datetime.now().time().minute == 2 and datetime.datetime.now().time().second == 0):
             channel = bot.get_channel(751907139425009694)
             await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
         await asyncio.sleep(15*60)
