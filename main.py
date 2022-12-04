@@ -6,6 +6,7 @@ from tabulate import tabulate
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.ext import tasks
 from discord.utils import get
 
 #from help_d import help_d
@@ -21,12 +22,12 @@ config = open('config.json')
 data = json.load(config)
 config.close()
 
+@tasks.loop(minutes=1)
 async def send_daily_quote():
-    while (True):
-        if (datetime.datetime.now().time().hour == 0 and datetime.datetime.now().time().minute == 2 and datetime.datetime.now().time().second == 0):
-            channel = bot.get_channel(751907139425009694)
-            await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
-        await asyncio.sleep(15*60)
+    print('test')
+    if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
+        channel = bot.get_channel(751907139425009694)
+        await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
 
 def pick_quote():
     global l_quote
@@ -37,7 +38,7 @@ def pick_quote():
     return quotes[quote]
 
 def test_user_or_role(ctx):
-    return ctx.author.guild_permissions.administrator or ctx.author.guil
+    return ctx.author.guild_permissions.administrator or ctx.author.guild
 
 @bot.event
 async def on_ready():
@@ -51,8 +52,8 @@ async def on_ready():
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
+    send_daily_quote.start()
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
-    await send_daily_quote()
 
     #contents = crawl_quotes(quote_url)
     #print(requests.get(quote_url).text)
