@@ -13,7 +13,7 @@ from discord.utils import get
 #from music_d import music_d
 from quotes_d import quotes
 
-bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())#commands.Bot(command_prefix='*')
+bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
 prefix = '.'
 l_quote = 0
@@ -182,14 +182,3 @@ async def on_message(message):
         await message.channel.send(x)
 
 bot.run(data['token'])
-#other stuff q
-
-#def crawl_quotes(url):
-#    content = requests.get(url).text
- #   result = []
-#    boolean = 0
- #   for i in content:
-  #      if boolean == 1:
-  #      if i == '\"' and boolean == 0:
-  #          boolean = 1
-  #          boolean = 0
