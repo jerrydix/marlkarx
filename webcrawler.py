@@ -21,7 +21,6 @@ def crawl_quotes(url):
         if x is not None and x.group(1).startswith('Die Analysen'):
             finish = True
         if x is not None and not finish:
-            print(x.group(1))
             quotes.append(x.group(1))
 
     return quotes
