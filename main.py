@@ -8,13 +8,14 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
+import webcrawler
 
 #from help_d import help_d
 #from music_d import music_d
-from quotes_d import quotes
 
 bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
+quotes = webcrawler.crawl_quotes(quote_url)
 prefix = '.'
 l_quote = 0
 game_choices = []
