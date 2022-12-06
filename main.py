@@ -142,11 +142,14 @@ async def role_error_catch(interaction: discord.Interaction, error):
 @bot.event
 async def on_member_join(member: discord.Member):
     await member.send(f"Welcome to {member.guild.name}, {member.name}!")
-    await bot.get_channel(751907139425009694).send(f"{member.display_name} has joined the server.")
+    if member.get_guild(170953505610137600):
+        await bot.get_channel(751907139425009694).send(f"{member.display_name} joined the server.")
+    elif member.get_guild(170953505610137600):
+        await bot.get_channel(976504141587312691).send(f"{member.display_name} joined the server.")
 
 @bot.event
 async def on_member_remove(member: discord.Member):
-   await bot.get_channel(751907139425009694).send(f"{member.display_name} has left the server.")
+   await bot.get_channel(751907139425009694).send(f"{member.display_name} left the server.")
 
 @bot.event
 async def on_message(message):
