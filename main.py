@@ -22,7 +22,7 @@ game_choices = []
 config = open('config.json')
 data = json.load(config)
 config.close()
-openai.api_key = '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'
+openai.api_key = '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'
 
 @tasks.loop(minutes=1)
 async def send_daily_quote():
@@ -137,13 +137,9 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
 @bot.tree.command(name='imagine', description='Generate an image using your description')
 @app_commands.describe(prompt='description')
 async def imagine(interaction: discord.Interaction, prompt: str):
-    msg = await interaction.response.send_message(f"Let the workers work on that...")
-    #async with aiohttp.request("POST", "https://backend.craiyon.com/generate", json={"prompt": prompt}) as resp:
+    await interaction.response.send_message(f"Let the workers work on that...")
     response = openai.Image.create(prompt=prompt, n=1, size="1024x1024")
     image_url = response['data'][0]['url']
-    #response = image_url
-    #img = Image.open(BytesIO(response))
-    #images = response['images']
     await interaction.channel.send(image_url)
 
 
