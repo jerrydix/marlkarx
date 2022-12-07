@@ -148,7 +148,6 @@ async def imagine(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name='complete', description='Generate a text using a prompt')
 @app_commands.describe(prompt='description')
 async def complete(interaction: discord.Interaction, prompt: str):
-    await interaction.response.send_message(f"Let the workers work on that...")
     try:
         response = openai.Completion.create(model="text-davinci-003", prompt=prompt)
     except openai.InvalidRequestError:
