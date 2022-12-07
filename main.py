@@ -149,8 +149,8 @@ async def imagine(interaction: discord.Interaction, prompt: str):
 @app_commands.describe(prompt='description')
 async def complete(interaction: discord.Interaction, prompt: str):
     try:
-        response = openai.Completion.create(model="text-davinci-003", prompt=prompt)
-    except openai.InvalidRequestError:
+        response = openai.Completion.create(model="text-davinci-003", prompt=prompt, max_tokens=30)
+    except openai.InvalidRequestError and discord.NotFound:
         return await interaction.response.send_message(f"*{prompt}* cannot be worked out by the workers. Try another prompt that is less nsfw.")
     text = response['choices'][0]['text']
     await interaction.response.send_message(text)
