@@ -134,7 +134,7 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
             result += f"**{u.display_name}**\n"
         await interaction.response.send_message(result)
 
-@bot.tree.command(name='imagine', description='Generate an image using your description')
+@bot.tree.command(name='imagine', description='Generate an image using a description')
 @app_commands.describe(prompt='description')
 async def imagine(interaction: discord.Interaction, prompt: str):
     await interaction.response.send_message(f"Let the workers work on that...")
@@ -145,7 +145,15 @@ async def imagine(interaction: discord.Interaction, prompt: str):
     image_url = response['data'][0]['url']
     await interaction.channel.send(image_url)
 
-
+@bot.tree.command(name='complete', description='Generate a text using a prompt')
+@app_commands.describe(prompt='description')
+async def complete(interaction: discord.Interaction, prompt: str):
+    await interaction.response.send_message(f"Let the workers work on that...")
+    try:
+        response = openai.Completion.create(model="text-davinci-003", prompt=prompt)
+    except openai.InvalidRequestError:
+        return await interaction.channel.send(f"*{prompt}* cannot be worked out by the workers. Try another prompt that is less nsfw.")
+    await interaction.channel.send(response)
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingRole):
