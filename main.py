@@ -138,7 +138,10 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
 @app_commands.describe(prompt='description')
 async def imagine(interaction: discord.Interaction, prompt: str):
     await interaction.response.send_message(f"Let the workers work on that...")
-    response = openai.Image.create(prompt=prompt, n=1, size="1024x1024")
+    try:
+        response = openai.Image.create(prompt=prompt, n=1, size="1024x1024")
+    except openai.InvalidRequestError:
+        return await interaction.channel.send(f"*{prompt}* cannot be imagined by the workers. Try another prompt that is less nsfw.")
     image_url = response['data'][0]['url']
     await interaction.channel.send(image_url)
 
