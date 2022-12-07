@@ -1,7 +1,7 @@
-import asyncio
 import datetime
 import json
 import random
+import openai
 from tabulate import tabulate
 import discord
 from discord import app_commands
@@ -22,6 +22,7 @@ game_choices = []
 config = open('config.json')
 data = json.load(config)
 config.close()
+openai.api_key = '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'
 
 @tasks.loop(minutes=1)
 async def send_daily_quote():
@@ -133,18 +134,32 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
             result += f"**{u.display_name}**\n"
         await interaction.response.send_message(result)
 
+@bot.tree.command(name='imagine', description='Generate an image using your description')
+@app_commands.describe(prompt='description')
+async def imagine(interaction: discord.Interaction, prompt: str):
+    msg = await interaction.response.send_message(f"Let the workers work on that...")
+    #async with aiohttp.request("POST", "https://backend.craiyon.com/generate", json={"prompt": prompt}) as resp:
+    response = openai.Image.create(prompt=prompt, n=1, size="1024x1024")
+    image_url = response['data'][0]['url']
+    #response = image_url
+    #img = Image.open(BytesIO(response))
+    #images = response['images']
+    await interaction.channel.send(image_url)
+
+
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingRole):
         await interaction.response.send_message(f"Role **{get(bot.get_guild(170953505610137600).roles, id=781223345319706646)}** is required to run this command. Execution failed.")
-    else: raise error
+    else:
+        raise error
 
 @bot.event
 async def on_member_join(member: discord.Member):
     await member.send(f"Welcome to {member.guild.name}, {member.name}!")
-    if member.get_guild(170953505610137600):
+    if member.guild.id == 170953505610137600:
         await bot.get_channel(751907139425009694).send(f"{member.display_name} joined the server.")
-    elif member.get_guild(170953505610137600):
+    elif member.guild.id == 170953505610137600:
         await bot.get_channel(976504141587312691).send(f"{member.display_name} joined the server.")
 
 @bot.event
@@ -185,4 +200,44 @@ async def on_message(message):
             x = random.randint(1, int(msg))
         await message.channel.send(x)
 
+#class Dropdown(discord.ui.Select):
+    #def __init__(self, message, images, user):
+    #    super().__init__()
+    #    self.message = message
+    #    self.images = images
+    #    self.user = user
+
+    #options = [
+     #   discord.SelectOption(label="1"),
+    #    discord.SelectOption(label="2"),
+    #    discord.SelectOption(label="3"),
+    #    discord.SelectOption(label="4"),
+    #    discord.SelectOption(label="5"),
+    #    discord.SelectOption(label="6"),
+    #    discord.SelectOption(label="7"),
+    #    discord.SelectOption(label="8"),
+    #    discord.SelectOption(label="9"),
+    #]
+
+    #super().__init__(
+    #   placeholder="Choose your image",
+    #    min_values=1,
+    #    max_values=1,
+    #    options=options
+    #)
+    #async def callback(self, interaction: discord.Interaction):
+    #    if not int(self.user) == interaction.user.id:
+    #        await interaction.response.send_message("You are not the author of this message!", ephemeral=True)
+    #    selection = int(self.values[0])-1
+    #    image = BytesIO(base64.decodebytes(self.images[selection].encode("utf-8")))
+    #    return await bot.get_channel(interaction.channel.name).send(file=discord.File(image, "generatedImage.png"),
+    #                                                                view=DropdownView(self.message, self.images, self.user))
+
+#class DropdownView(discord.ui.View):
+    #def __int__(self, message, images, user):
+        #super.__init__()
+        #self.message = message
+        #self.images = images
+        #self.user = user
+        #self.add_item(Dropdown(self.message, self.images, self.user))
 bot.run(data['token'])
