@@ -21,8 +21,8 @@ l_quote = 0
 game_choices = []
 config = open('config.json')
 data = json.load(config)
+openai.api_key = data['openai_key']
 config.close()
-openai.api_key = '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'
 
 @tasks.loop(minutes=1)
 async def send_daily_quote():
