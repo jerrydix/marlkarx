@@ -160,10 +160,10 @@ async def complete(interaction: discord.Interaction, prompt: str):
 @app_commands.describe(amount='amount')
 async def complete(interaction: discord.Interaction, amount: int):
     if amount <= 25:
-        await interaction.channel.purge(limit=amount)
-        await interaction.channel.send(f"{amount} messages have been deleted.")
+        await interaction.response.send_message(f"Deleting {amount} message(s).")
+        await interaction.channel.purge(limit=amount, before=interaction)
     else:
-        await interaction.response.send_message('You can\'t delete more than 25 lines at once!')
+        await interaction.response.send_message('You can\'t delete more than 25 messages at once!')
 
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
