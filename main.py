@@ -159,9 +159,11 @@ async def complete(interaction: discord.Interaction, prompt: str):
 @app_commands.checks.has_role(781223345319706646)
 @app_commands.describe(amount='amount')
 async def complete(interaction: discord.Interaction, amount: int):
-    if amount <= 25:
+    if 25 >= amount > 0:
         await interaction.response.send_message(f"Deleting {amount} message(s).")
         await interaction.channel.purge(limit=amount, before=interaction)
+    elif amount < 0:
+        await interaction.response.send_message('You can\'t delete a negative amount of messages.')
     else:
         await interaction.response.send_message('You can\'t delete more than 25 messages at once!')
 
