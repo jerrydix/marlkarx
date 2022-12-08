@@ -156,6 +156,7 @@ async def complete(interaction: discord.Interaction, prompt: str):
     await interaction.response.send_message(text)
 
 @bot.tree.command(name='clear', description='Delete a desired amount of messages')
+@app_commands.checks.has_role(781223345319706646)
 @app_commands.describe(amount='amount')
 async def complete(interaction: discord.Interaction, amount: int):
     await interaction.channel.purge(limit=amount)
