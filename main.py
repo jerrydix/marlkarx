@@ -154,6 +154,13 @@ async def complete(interaction: discord.Interaction, prompt: str):
         return await interaction.response.send_message(f"*{prompt}* cannot be worked out by the workers. Try another prompt that is less nsfw.")
     text = response['choices'][0]['text']
     await interaction.response.send_message(text)
+
+@bot.tree.command(name='clear', description='Delete a desired amount of messages')
+@app_commands.describe(amount='amount')
+async def complete(interaction: discord.Interaction, amount: int):
+    await interaction.channel.purge(limit=amount)
+    await interaction.response.send_message(f"{amount} messages have been deleted.")
+
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingRole):
