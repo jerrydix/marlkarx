@@ -27,7 +27,7 @@ config.close()
 @tasks.loop(minutes=1)
 async def send_daily_quote():
     if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
-        channel = bot.get_channel(751907139425009694)
+        channel = bot.get_channel(779824836498948118)
         await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
 
 def pick_quote():
