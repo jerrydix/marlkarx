@@ -85,6 +85,7 @@ async def help(interaction: discord.Interaction):
     await interaction.response.send_message('```' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'], ['/echo <message>', 'Marl Karx quotes you.'], ['/manifest', 'Get the Manifest of the Communist Party for free!'], ['/choose <max>', 'Marl Karx chooses a random number from 1 to <max>.'], ['/ping <game>', 'Ping all users who are added to this game ping.'], ['/pingadd <game> <user>', 'Add a user to a specific game ping.'], ['/pingremove <game> <user>', 'Remove a user from a specific game ping.'], ['/pinglist <game>', 'List all users of a game ping.']]) + '```')
 
 @bot.tree.command(name='ping', description='Get the squad together')
+@commands.cooldown(1, 15, commands.BucketType.user)
 @app_commands.describe(game='game')
 @app_commands.choices(game=game_choices)
 async def ping(interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
@@ -120,6 +121,20 @@ async def ping_remove(interaction: discord.Interaction, game: discord.app_comman
         await interaction.response.send_message(f"**{user.name}** was removed from the **{game.name}** ping")
     else:
         await interaction.response.send_message(f"**{user.name}** is not part of the **{game.name}** ping, cannot remove user")
+
+@bot.tree.command(name='pinggameadd', description='Add a game to the ping list')
+@app_commands.checks.has_role(781223345319706646)
+@app_commands.describe(game='game')
+@app_commands.choices(game=game_choices)
+async def ping_game_add(interaction: discord.Interaction, game: str):
+    if game in data['games']:
+        await interaction.response.send_message(f"**{game}** is already pingable, cannot add game twice")
+    else:
+        c = open('config.json', 'w')
+        data['games'].append(game)
+        json.dump(data, c)
+        c.close()
+        await interaction.response.send_message(f"**{game}** was added to the ping system")
 
 @bot.tree.command(name='pinglist', description='List all users of a game ping')
 @app_commands.describe(game='game')
@@ -163,7 +178,7 @@ async def complete(interaction: discord.Interaction, prompt: str):
 @bot.tree.command(name='purge', description='Delete a desired amount of messages')
 @app_commands.checks.has_role(781223345319706646)
 @app_commands.describe(amount='amount')
-async def complete(interaction: discord.Interaction, amount: int):
+async def purge(interaction: discord.Interaction, amount: int):
     if 25 >= amount > 0:
         await interaction.response.send_message(f"Deleting {amount} message(s).")
         await interaction.channel.purge(limit=amount, before=interaction)
