@@ -146,7 +146,7 @@ async def ping_add_game(interaction: discord.Interaction, game: str):
 @app_commands.choices(game=game_choices)
 async def ping_remove_game(interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
     for i in data['games']:
-        if i['name'] == game.value:
+        if i['name'] == game.name:
             c = open('config.json', 'w')
             data['games'].remove(i)
             json.dump(data, c)
@@ -157,9 +157,9 @@ async def ping_remove_game(interaction: discord.Interaction, game: discord.app_c
             while i < len(data['games']):
                 game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
                 i += 1
-            await interaction.response.send_message(f"**{game.value}** was removed from the ping system")
+            await interaction.response.send_message(f"**{game.name}** was removed from the ping system")
             return
-    await interaction.response.send_message(f"**{game.value}** is not part of the ping system, cannot remove it")
+    await interaction.response.send_message(f"**{game.name}** is not part of the ping system, cannot remove it")
 
 @bot.tree.command(name='pinglist', description='List all users of a game ping')
 @app_commands.describe(game='game')
