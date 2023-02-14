@@ -174,9 +174,7 @@ async def ping_list(interaction: discord.Interaction, game: discord.app_commands
             result += f"**{u.display_name}**\n"
         await interaction.response.send_message(result)
 
-@bot.tree.command(name='pinglist', description='List all users of a game ping')
-@app_commands.describe(game='game')
-@app_commands.choices(game=game_choices)
+@bot.tree.command(name='pinglistgames', description='List all users of a game ping')
 async def ping_list(interaction: discord.Interaction):
     if len(data['games']) == 0:
         await interaction.response.send_message(f"No games are registered in the ping system")
