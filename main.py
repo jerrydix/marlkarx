@@ -180,8 +180,8 @@ async def ping_list(interaction: discord.Interaction):
         await interaction.response.send_message(f"No games are registered in the ping system")
     else:
         result = f"Games registered in the ping system:\n"
-        for game in data['games']:
-            result += f"**{game[game.value]}**\n"
+        for i in data['games']:
+            result += f"**{data['games'][i]['name']}**\n"
         await interaction.response.send_message(result)
 
 @bot.tree.command(name='imagine', description='Generate an image using a description')
