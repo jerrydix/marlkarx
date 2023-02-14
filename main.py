@@ -138,7 +138,6 @@ async def ping_add_game(interaction: discord.Interaction, game: str):
     c.close()
     global game_choices
     game_choices.append(discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
-    print(game_choices)
     await interaction.response.send_message(f"**{game}** was added to the ping system")
 
 @bot.tree.command(name='pingremovegame', description='Remove a game fromd the ping list')
@@ -182,7 +181,6 @@ async def ping_list(interaction: discord.Interaction):
     if len(data['games']) == 0:
         await interaction.response.send_message(f"No games are registered in the ping system")
     else:
-
         result = f"Games registered in the ping system:\n"
         for game in data['games']:
             result += f"**{game.value}**\n"
