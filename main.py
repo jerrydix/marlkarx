@@ -100,13 +100,13 @@ async def ping(interaction: discord.Interaction, game: discord.app_commands.Choi
 @app_commands.choices(game=game_choices)
 async def ping_add(interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
     if user.id in data['games'][game.value]['players']:
-        await interaction.response.send_message(f"**{user.name}** is already part of the **{game.name}** ping, cannot add user twice")
+        await interaction.response.send_message(f"**{user.display_name}** is already part of the **{game.name}** ping, cannot add user twice")
     else:
         c = open('config.json', 'w')
         data['games'][game.value]['players'].append(user.id)
         json.dump(data, c)
         c.close()
-        await interaction.response.send_message(f"**{user.name}** was added to the **{game.name}** ping")
+        await interaction.response.send_message(f"**{user.display_name}** was added to the **{game.name}** ping")
 
 @bot.tree.command(name='pingremove', description='Remove a user from a ping command')
 @app_commands.checks.has_role(781223345319706646)
@@ -118,9 +118,9 @@ async def ping_remove(interaction: discord.Interaction, game: discord.app_comman
         data['games'][game.value]['players'].remove(user.id)
         json.dump(data, c)
         c.close()
-        await interaction.response.send_message(f"**{user.name}** was removed from the **{game.name}** ping")
+        await interaction.response.send_message(f"**{user.display_name}** was removed from the **{game.name}** ping")
     else:
-        await interaction.response.send_message(f"**{user.name}** is not part of the **{game.name}** ping, cannot remove user")
+        await interaction.response.send_message(f"**{user.display_name}** is not part of the **{game.name}** ping, cannot remove user")
 
 @bot.tree.command(name='pingaddgame', description='Add a game to the ping list')
 @app_commands.checks.has_role(781223345319706646)
