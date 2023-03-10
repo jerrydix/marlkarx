@@ -401,16 +401,23 @@ class Music(commands.Cog):
 
     async def play_song(self, guild: discord.Guild, song: Song):
         '''Downloads and starts playing a YouTube video's audio.'''
-
+        
         audio_dir = os.path.join('.', 'audio')
         audio_path = os.path.join(audio_dir, f'{guild.id}')
+        output_id = guild.id + 1
+        output_path = os.path.join(audio_dir, f'{output_id}')
         
         try:
             os.remove(audio_path + '.opus')
         except:
             pass
-        voice = get(self.bot.voice_clients, guild=guild)
+        
+        try:
+            os.remove(output_path + '.opus')
+        except:
+            pass
 
+        voice = get(self.bot.voice_clients, guild=guild)
         queue = self.music_queues.get(guild)
         ydl_opts = {
             'format': 'bestaudio/best',
@@ -425,11 +432,6 @@ class Music(commands.Cog):
 
         Path(audio_dir).mkdir(parents=True, exist_ok=True)
 
-        try:
-            os.remove(audio_path)
-        except OSError:
-            pass
-
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
                 ydl.download([f'{song.url}'])
@@ -438,8 +440,8 @@ class Music(commands.Cog):
                 print('Error downloading song. Skipping.')
                 return
         
-        subprocess.run(['./ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', 'os.path.abspath(audio_path) + '.opus''])
-        voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
+        subprocess.run(['./ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
+        voice.play(discord.FFmpegPCMAudio(os.path.abspath(output_path) + '.opus'))
         queue.clear_skip_votes()
 
     async def wait_for_end_of_song(self, guild: discord.Guild):
