@@ -1,6 +1,7 @@
 import asyncio
 import os
 import subprocess
+import validators
 from collections import defaultdict
 
 import discord
@@ -44,7 +45,7 @@ class Music(commands.Cog):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
    
-        if not prompt.startswith('https://'):
+        if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
         try:
@@ -122,6 +123,7 @@ class Music(commands.Cog):
             await interaction.response.send_message('I\'m not playing a song right now.')
         else:
             voice.stop()
+            await interaction.response.send_message('Skipped song.')
     
     @app_commands.command(name='fremove', description='Force remove a song')
     @app_commands.checks.has_role(781223345319706646)
@@ -174,6 +176,22 @@ class Music(commands.Cog):
             to_send += f'{set_str_len(f"{pos + 1})", 4)}{title}|{uploader}|{song.requested_by.display_name}\n'
 
         await interaction.response.send_message(to_send + '```')
+        
+        
+    @app_commands.command(name='songinfo', description='Displays info about the currently playing song')
+    @app_commands.describe(index='index')
+    async def song_info(self, interaction: discord.Interaction, index: int = 0):
+        '''Print out more information on the song currently playing.'''
+
+        queue = self.music_queues.get(interaction.guild)
+
+        if index not in range(len(queue) + 1):
+            await interaction.response.send_message('A song does not exist at that index in the queue.')
+            return
+
+        embed = queue.get_embed(index)
+        await interaction.response.send_message(embed=embed)
+
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
@@ -420,7 +438,7 @@ class Music(commands.Cog):
                 print('Error downloading song. Skipping.')
                 return
         
-        # subprocess.run(['./ffmpeg', '-i', os.path.abspath(audio_path) + '.mp3', '-c:a', 'libopus', os.path.abspath(audio_path) + '.ogg'])
+        subprocess.run(['./ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', 'os.path.abspath(audio_path) + '.opus''])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
         queue.clear_skip_votes()
 

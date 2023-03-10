@@ -5,3 +5,5 @@ pynacl
 openai
 tabulate
 bs4
+validators
+ffmpeg-normalize
