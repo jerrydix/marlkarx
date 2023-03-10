@@ -130,6 +130,6 @@ dmypy.json
 
 # config files
 config.json
-ffmpeg.exe
-ffplay.exe
-ffprobe.exe
+
+# ffmpeg exes
+*.exe
