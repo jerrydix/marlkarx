@@ -440,7 +440,7 @@ class Music(commands.Cog):
                 print('Error downloading song. Skipping.')
                 return
         
-        # subprocess.run(['./ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
+        # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
         queue.clear_skip_votes()
 
