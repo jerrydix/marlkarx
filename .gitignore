@@ -133,3 +133,4 @@ config.json
 
 # ffmpeg exes
 *.exe
+*.opus

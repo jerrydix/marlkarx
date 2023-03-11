@@ -13,6 +13,7 @@ from pathlib import Path
 
 from bot import config
 from bot.music import Queue, Song, SongRequestError
+from pagination import QueueView
 
 def set_str_len(s: str, length: int):
     '''Adds whitespace or trims string to enforce a specific size'''
@@ -150,7 +151,7 @@ class Music(commands.Cog):
         await interaction.response.send_message(f'Removed {song.title} from the queue.')
         return
     
-    @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
+    @app_commands.command(name='queuedepr', description='Marl Karx shows the current song queue')
     async def queuesong(self, interaction: discord.Interaction, page: int = 1):
         '''Prints out a specified page of the music queue, defaults to first page.'''
 
@@ -191,6 +192,18 @@ class Music(commands.Cog):
 
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
+        
+    @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
+    async def queueview(self, interaction: discord.Interaction):
+        queue = self.music_queues.get(interaction.guild)
+        
+        if not queue:
+            await interaction.response.send_message('I don\'t have anything in my queue right now.')
+            return
+        
+        view = QueueView()
+        view.data = queue
+        await view.send(interaction)
 
 
     @commands.command()

@@ -46,9 +46,7 @@ class Client(commands.Bot):
         except Exception as e:
             print(e)
         send_daily_quote.start()
-        # contents = crawl_quotes(quote_url)
-        # print(requests.get(quote_url).text)
-        
+    
     async def setup_hook(self):
         await self.load_extension('cogs.core')
         await self.load_extension('cogs.music')
