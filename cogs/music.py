@@ -29,9 +29,9 @@ class Music(commands.Cog):
         
     @app_commands.command(name='play', description='Marl Karx plays a song for you')
     @app_commands.describe(prompt='song name')
-    async def playmusic(self, interaction: discord.Interaction, prompt: str):
-        '''Adds a song to the queue either by YouTube URL or YouTube Search.'''
-
+    async def playmusic(self, interaction: discord.Interaction, prompt: str = ''):
+        '''Adds a song to the queue either by YouTube URL or YouTube Search.'''\
+            
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         await interaction.response.defer(ephemeral=False)
@@ -44,6 +44,11 @@ class Music(commands.Cog):
 
         if voice is not None and not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.followup.send('You\'re not in my voice channel.')
+            return
+            
+        if prompt == '' and voice.is_paused():
+            voice.resume()
+            await interaction.followup.send('Resumed song.')
             return
    
         if not validators.url(prompt):
@@ -193,6 +198,7 @@ class Music(commands.Cog):
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
         
+        
     @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
     async def queueview(self, interaction: discord.Interaction):
         queue = self.music_queues.get(interaction.guild)
@@ -204,7 +210,23 @@ class Music(commands.Cog):
         view = QueueView()
         view.data = queue
         await view.send(interaction)
-
+        
+    
+    @app_commands.command(name='pause', description='Pause the currently playing song')
+    async def pause(self, interaction: discord.Interaction):
+        voice = get(self.bot.voice_clients, guild=interaction.guild)
+        
+        if not self.client_in_same_channel(interaction.user, interaction.guild):
+            await interaction.response.send_message('You\'re not in a voice channel with me.')
+            return
+        
+        if not voice.is_playing():
+            await interaction.response.send_message('I don\'t have anything playing right now.')
+            return
+        
+        voice.pause()
+        await interaction.response.send_message('Paused song.')
+        
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
@@ -223,7 +245,7 @@ class Music(commands.Cog):
             await ctx.send('You\'re not in my voice channel.')
             return
 
-        if not url.startswith('https://'):
+        if not validators.url(url):
             url = f'ytsearch1:{url} {" ".join(args)}'
 
         try:
@@ -233,7 +255,7 @@ class Music(commands.Cog):
             return
 
         music_queue.append(song)
-        await ctx.send(f'Queued song: {song.title}')
+        await ctx.send(f'Queued song: **{song.title}**')
 
         if voice is None or not voice.is_connected():
             await channel.connect()
