@@ -15,7 +15,9 @@ class QueueView(discord.ui.View):
     def create_embed(self, data):
         embed = discord.Embed(title='Current Queue:', colour=discord.Colour.dark_red())
         for i in data:
-            embed.add_field(name=i.title, value=i.duration_formatted, inline=False)
+            embed.add_field(name=i.title, value=i.uploader, inline=True)
+            embed.add_field(name=i.duration_formatted, value=i.requested_by, inline=True)
+            embed.add_field(name='', value='', inline=True)
         return embed
     
     async def update_msg(self, data):

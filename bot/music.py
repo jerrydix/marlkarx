@@ -103,7 +103,7 @@ class Song(dict):
     @property
     def duration_formatted(self):
         minutes, seconds = self.duration_raw // 60, self.duration_raw % 60
-        return f'{minutes}m, {seconds}s'
+        return f'[{minutes:02d}:{seconds:02d}]'
 
     @property
     def description(self):
