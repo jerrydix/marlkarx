@@ -3,6 +3,7 @@ import os
 import subprocess
 import validators
 from collections import defaultdict
+import json
 
 import discord
 from discord import app_commands
@@ -14,6 +15,7 @@ from pathlib import Path
 from bot import config
 from bot.music import Queue, Song, SongRequestError
 from pagination import QueueView
+from core import data
 
 def set_str_len(s: str, length: int):
     '''Adds whitespace or trims string to enforce a specific size'''
@@ -227,6 +229,35 @@ class Music(commands.Cog):
         voice.pause()
         await interaction.response.send_message('Paused song.')
         
+    @app_commands.command(name='createplaylist', description='Create a new playlist')
+    @app_commands.describe(name='name')
+    async def createplaylist(self, interaction: discord.Interaction, name: str):
+        if 'playlists' in data and len(data['playlists']) < 5:
+            for list in data['playlists']:
+                if list['name'] == name:
+                    await interaction.response.send_message('This playlist already exits. Can\'t add playlist with same name twice')
+                    return
+            c = open('config.json', 'w')
+            list_obj = {'name': name, 'tracks': []}
+            json.dumps(list_obj)
+            data['playlists'].append(list_obj)
+            json.dump(data, c)
+            c.close()
+        elif 'playlists' in data:
+            await interaction.response.send_message('Cannot add more than 5 playlists.')
+            return
+        else:
+            # TODO
+            print(TODO)
+            c = open('config.json', 'w')
+            # playlists = {}
+            list_obj = {'name': name, 'tracks': []}
+            json.dumps(list_obj)
+            data['playlists'].append(list_obj)
+            json.dump(data, c)
+            c.close()
+            
+            
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
