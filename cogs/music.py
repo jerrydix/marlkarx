@@ -303,7 +303,7 @@ class Music(commands.Cog):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
             
-        if len(data['playlists'][playlist.value]['tracks']) == 0:
+        if len(data['playlists'][playlist.value]['tracks']) is 0:
             await interaction.followup.send('There are no tracks in this playlist.')
             return
         
