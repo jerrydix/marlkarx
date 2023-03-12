@@ -31,10 +31,6 @@ class Client(commands.Bot):
         print(f'We have logged in as {bot.user}')
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="workers work"))
         print(f'Bot with id: {bot.application_id} started running')
-        i = 0
-        while i < len(data['games']):
-            game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
-            i += 1
         try:
             synced = await self.tree.sync()
             # for i in synced:
