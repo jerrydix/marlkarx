@@ -206,7 +206,7 @@ class Core(commands.Cog):
         else:
             result = f"Users pinged by the **{game.name}** ping:\n"
             for userid in data['games'][game.value]['players']:
-                u = get(bot.get_all_members(), id=userid)
+                u = get(self.bot.get_all_members(), id=userid)
                 result += f"**{u.display_name}**\n"
             await interaction.response.send_message(result)
 
