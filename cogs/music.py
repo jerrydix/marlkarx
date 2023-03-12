@@ -315,8 +315,8 @@ class Music(commands.Cog):
             await channel.connect()
 
         list = data['playlists'][playlist.value]['name']
-        await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
         await self.play_all_songs(interaction.guild)
+        await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
 
 
     @commands.command()
