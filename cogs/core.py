@@ -226,14 +226,12 @@ class Core(commands.Cog):
     @app_commands.describe(prompt='description')
     async def imagine(self, interaction: discord.Interaction, prompt: str):
         await interaction.response.defer(ephemeral=False)
-        # await interaction.response.send_message(f"Let the workers work on that...")
         try:
             response = openai.Image.create(prompt=prompt, n=1, size="1024x1024")
         except openai.InvalidRequestError:
             return await interaction.channel.send(
                 f"*{prompt}* cannot be imagined by the workers. Try another prompt that is less nsfw.")
         image_url = response['data'][0]['url']
-        # await interaction.channel.send(image_url)
         await interaction.followup.send(image_url)
 
 
@@ -241,14 +239,12 @@ class Core(commands.Cog):
     @app_commands.describe(prompt='description')
     async def complete(self, interaction: discord.Interaction, prompt: str):
         await interaction.response.defer(ephemeral=False)
-        # await interaction.response.send_message(f"Let the workers work on that...")
         try:
             response = openai.Completion.create(model="text-davinci-003", prompt=prompt, max_tokens=500)
         except openai.InvalidRequestError and discord.NotFound:
             return await interaction.response.send_message(
                 f"*{prompt}* cannot be worked out by the workers. Try another prompt that is less nsfw.")
         text = response['choices'][0]['text']
-        # await interaction.channel.send(f"```{text}```")
         await interaction.followup.send(f"```{text}```")
 
 
