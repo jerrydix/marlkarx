@@ -243,8 +243,9 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
+            await 
         elif 'playlists' in data:
-            await interaction.response.send_message('Cannot add more than 5 playlists.')
+            await interaction.response.send_message(f'Added playlist **{name}**')
             return
         else:
             print(TODO)
