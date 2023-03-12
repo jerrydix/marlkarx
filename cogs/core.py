@@ -26,6 +26,10 @@ class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.send_daily_quote.start()
+        i = 0
+        while i < len(data['games']):
+            game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
+            i += 1
     
     def pick_quote():
         global l_quote
