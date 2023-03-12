@@ -283,7 +283,41 @@ class Music(commands.Cog):
         json.dump(data, c)
         c.close()
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
-        await interaction.followup.send(f'Added *{song.title}* to the **{playlist.name}** playlist.')
+        await interaction.followup.send(f'Added **{song.title}** to the **{playlist.name}** playlist.')
+
+
+    @app_commands.command(name='playlist', description='Play a pl')
+    @app_commands.describe(playlist='playlist')
+    @app_commands.choices(playlist=playlists)
+    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
+        await interaction.response.defer(ephemeral=False)
+        music_queue = self.music_queues[interaction.guild]
+        voice = get(self.bot.voice_clients, guild=interaction.guild)
+        try:
+            channel = interaction.user.voice.channel
+        except:
+            await interaction.followup.send('You\'re not connected to a voice channel.')
+            return
+
+        if voice is not None and not self.client_in_same_channel(interaction.user, interaction.guild):
+            await interaction.followup.send('You\'re not in my voice channel.')
+            return
+            
+        for track in data['playlists'][playlist.value]['tracks']:
+            self.playmusic(self, interaction, track)
+            try:
+                song = Song(f'ytsearch1:{track}', author=interaction.user)
+            except SongRequestError as e:
+                await interaction.followup.send(e.args[0])
+                return
+            music_queue.append(song)
+
+        if voice is None or not voice.is_connected():
+            await channel.connect()
+
+        list = data['playlists'][playlist.value]['name']
+        await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
+        await self.play_all_songs(interaction.guild)
 
 
     @commands.command()
