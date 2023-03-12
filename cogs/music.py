@@ -306,17 +306,21 @@ class Music(commands.Cog):
         for track in data['playlists'][playlist.value]['tracks']:
             try:
                 song = Song(f'ytsearch1:{track}', author=interaction.user)
+                print(song.title)
             except SongRequestError as e:
                 await interaction.followup.send(e.args[0])
                 return
             music_queue.append(song)
+        
+        for song in music_queue:
+            print(song.title)
 
         if voice is None or not voice.is_connected():
             await channel.connect()
 
         list = data['playlists'][playlist.value]['name']
-        await self.play_all_songs(interaction.guild)
         await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
+        await self.play_all_songs(interaction.guild)
 
 
     @commands.command()
