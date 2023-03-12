@@ -304,7 +304,6 @@ class Music(commands.Cog):
             return
             
         for track in data['playlists'][playlist.value]['tracks']:
-            self.playmusic(self, interaction, track)
             try:
                 song = Song(f'ytsearch1:{track}', author=interaction.user)
             except SongRequestError as e:
