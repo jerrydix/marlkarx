@@ -22,12 +22,17 @@ def set_str_len(s: str, length: int):
 
     return s.ljust(length)[:length]
 
+playlists = []
 
 class Music(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.music_queues = defaultdict(Queue)
+        i = 0
+        while i < len(data['games']):
+            playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['playlists'], value=i))
+            i += 1
         
     @app_commands.command(name='play', description='Marl Karx plays a song for you')
     @app_commands.describe(prompt='song name')
@@ -228,6 +233,7 @@ class Music(commands.Cog):
         
         voice.pause()
         await interaction.response.send_message('Paused song.')
+       
         
     @app_commands.command(name='createplaylist', description='Create a new playlist')
     @app_commands.describe(name='name')
@@ -235,7 +241,7 @@ class Music(commands.Cog):
         if 'playlists' in data and len(data['playlists']) < 5:
             for list in data['playlists']:
                 if list['name'] == name:
-                    await interaction.response.send_message('This playlist already exits. Can\'t add playlist with same name twice')
+                    await interaction.response.send_message('This playlist already exits. Can\'t add playlist with same name twice.')
                     return
             c = open('config.json', 'w')
             list_obj = {'name': name, 'tracks': []}
@@ -243,9 +249,9 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
-            await 
-        elif 'playlists' in data:
             await interaction.response.send_message(f'Added playlist **{name}**')
+        elif 'playlists' in data:
+            await interaction.response.send_message('Cannot add more than 5 playlists.')
             return
         else:
             print(TODO)
@@ -256,8 +262,19 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
+    
             
-            
+    @app_commands.command(name='playlistadd', description='Add a song to a playlist')
+    @app_commands.describe(playlist='playlist')
+    @app_commands.choices(playlist=playlists)
+    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], name: str):
+        c = open('config.json', 'w')
+        data['playlists'][playlist.value]['tracks'].append(name)
+        json.dump(data, c)
+        c.close()
+        playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
+        await interaction.response.send_message(f'Added *{name}* to the **{playlist.name}* playlist.')
+
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
