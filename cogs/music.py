@@ -314,13 +314,12 @@ class Music(commands.Cog):
                 await interaction.followup.send(e.args[0])
                 return
             music_queue.append(song)
-
-        if voice is None or not voice.is_connected():
-            await channel.connect()
+            if voice is None or not voice.is_connected():
+                await channel.connect()
+                await self.play_all_songs(interaction.guild)
 
         list = data['playlists'][playlist.value]['name']
         await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
-        await self.play_all_songs(interaction.guild)
 
 
     @commands.command()
