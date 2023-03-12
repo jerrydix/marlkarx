@@ -279,7 +279,7 @@ class Music(commands.Cog):
             return
 
         c = open('config.json', 'w')
-        data['playlists'][playlist.value]['tracks'].append(prompt)
+        data['playlists'][playlist.value]['tracks'].append(song.title)
         json.dump(data, c)
         c.close()
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
