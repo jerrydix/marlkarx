@@ -303,17 +303,17 @@ class Music(commands.Cog):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
             
+        if len(data['playlists'][playlist.value]['tracks']) == 0:
+            await interaction.followup.send('There are no tracks in this playlist.')
+            return
+        
         for track in data['playlists'][playlist.value]['tracks']:
             try:
                 song = Song(f'ytsearch1:{track}', author=interaction.user)
-                print(song.title)
             except SongRequestError as e:
                 await interaction.followup.send(e.args[0])
                 return
             music_queue.append(song)
-        
-        for song in music_queue:
-            print(song.title)
 
         if voice is None or not voice.is_connected():
             await channel.connect()
