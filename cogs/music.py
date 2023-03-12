@@ -15,7 +15,7 @@ from pathlib import Path
 from bot import config
 from bot.music import Queue, Song, SongRequestError
 from pagination import QueueView
-from core import data
+from cogs.core import data
 
 def set_str_len(s: str, length: int):
     '''Adds whitespace or trims string to enforce a specific size'''
