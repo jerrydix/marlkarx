@@ -320,6 +320,7 @@ class Music(commands.Cog):
 
         list = data['playlists'][playlist.value]['name']
         await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
+        await self.play_all_songs(interaction.guild)
 
 
     @commands.command()
