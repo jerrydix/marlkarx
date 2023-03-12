@@ -31,7 +31,7 @@ class Music(commands.Cog):
         self.music_queues = defaultdict(Queue)
         i = 0
         while i < len(data['games']):
-            playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['playlists'], value=i))
+            playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
             i += 1
         
     @app_commands.command(name='play', description='Marl Karx plays a song for you')
