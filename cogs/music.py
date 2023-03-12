@@ -247,7 +247,6 @@ class Music(commands.Cog):
             await interaction.response.send_message('Cannot add more than 5 playlists.')
             return
         else:
-            # TODO
             print(TODO)
             c = open('config.json', 'w')
             # playlists = {}

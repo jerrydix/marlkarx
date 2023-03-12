@@ -20,7 +20,7 @@ settings = open('config.json')
 data = json.load(settings)
 openai.api_key = data['openai_key']
 settings.close()
-    
+
 class Core(commands.Cog):
     
     def __init__(self, bot: commands.Bot):
