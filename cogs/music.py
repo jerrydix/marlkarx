@@ -527,7 +527,6 @@ class Music(commands.Cog):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
                 ydl.download([f'{song.url}'])
-                ydl.
             except:
                 await self.play_all_songs(guild)
                 print('Error downloading song. Skipping.')
