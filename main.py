@@ -11,9 +11,6 @@ from discord.ext import tasks
 from discord.utils import get
 import webcrawler
 
-# from help_d import help_d
-# from music_d import music_d
-
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
 quotes = webcrawler.crawl_quotes(quote_url)
 prefix = '.'
@@ -45,7 +42,6 @@ class Client(commands.Bot):
             print(f"Synced {len(synced)} command(s)")
         except Exception as e:
             print(e)
-        send_daily_quote.start()
     
     async def setup_hook(self):
         await self.load_extension('cogs.core')
@@ -53,13 +49,6 @@ class Client(commands.Bot):
         
         
 bot = Client()
-
-
-@tasks.loop(minutes=1)
-async def send_daily_quote():
-    if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
-        channel = bot.get_channel(779824836498948118)
-        await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
         
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):

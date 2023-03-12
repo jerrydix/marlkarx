@@ -25,6 +25,7 @@ class Core(commands.Cog):
     
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.send_daily_quote.start()
     
     def pick_quote():
         global l_quote
@@ -37,7 +38,12 @@ class Core(commands.Cog):
     def test_user_or_role(ctx):
         return ctx.author.guild_permissions.administrator or ctx.author.guild
 
-
+    @tasks.loop(minutes=1)
+    async def send_daily_quote(self):
+        if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
+            channel = self.bot.get_channel(779824836498948118)
+            await channel.send('**Tägliches Zitat:**\n*\"' + self.pick_quote() + '\"*')
+        
     @app_commands.command(name='quote', description='Marl Karx quotes Karl Marx')
     async def quote(self, interaction: discord.Interaction):
         await interaction.response.send_message('*\"' + self.pick_quote() + '\"*')
