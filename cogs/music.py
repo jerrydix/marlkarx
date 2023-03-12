@@ -286,7 +286,7 @@ class Music(commands.Cog):
         await interaction.followup.send(f'Added **{song.title}** to the **{playlist.name}** playlist.')
 
 
-    @app_commands.command(name='playlist', description='Play a pl')
+    @app_commands.command(name='playlist', description='Play a playlist')
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
     async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
