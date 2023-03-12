@@ -267,13 +267,22 @@ class Music(commands.Cog):
     @app_commands.command(name='playlistadd', description='Add a song to a playlist')
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
-    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], name: str):
+    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], prompt: str):
+        if not validators.url(prompt):
+            prompt = f'ytsearch1:{prompt}'
+
+        try:
+            song = Song(prompt, author=interaction.user)
+        except SongRequestError as e:
+            await interaction.followup.send(e.args[0])
+            return
+
         c = open('config.json', 'w')
-        data['playlists'][playlist.value]['tracks'].append(name)
+        data['playlists'][playlist.value]['tracks'].append(prompt)
         json.dump(data, c)
         c.close()
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
-        await interaction.response.send_message(f'Added *{name}* to the **{playlist.name}* playlist.')
+        await interaction.response.send_message(f'Added *{song.title}* to the **{playlist.name}** playlist.')
 
 
     @commands.command()
@@ -518,6 +527,7 @@ class Music(commands.Cog):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
                 ydl.download([f'{song.url}'])
+                ydl.
             except:
                 await self.play_all_songs(guild)
                 print('Error downloading song. Skipping.')
