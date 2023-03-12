@@ -268,6 +268,7 @@ class Music(commands.Cog):
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
     async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], prompt: str):
+        await interaction.response.defer(ephemeral=False)
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
@@ -282,7 +283,7 @@ class Music(commands.Cog):
         json.dump(data, c)
         c.close()
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
-        await interaction.response.send_message(f'Added *{song.title}* to the **{playlist.name}** playlist.')
+        await interaction.followup.send(f'Added *{song.title}* to the **{playlist.name}** playlist.')
 
 
     @commands.command()
