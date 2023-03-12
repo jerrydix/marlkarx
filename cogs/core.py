@@ -211,7 +211,7 @@ class Core(commands.Cog):
             await interaction.response.send_message(result)
 
 
-    @app_commands.command(name='pinglistgames', description='List all users of a game ping')
+    @app_commands.command(name='pinglistgames', description='List all games registered in the ping system')
     async def ping_list_games(self, interaction: discord.Interaction):
         if len(data['games']) == 0:
             await interaction.response.send_message(f"No games are registered in the ping system")
