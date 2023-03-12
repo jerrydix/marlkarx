@@ -289,7 +289,7 @@ class Music(commands.Cog):
     @app_commands.command(name='playlist', description='Play a pl')
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
-    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
+    async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
         await interaction.response.defer(ephemeral=False)
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
