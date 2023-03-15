@@ -11,6 +11,7 @@ import yt_dlp
 from discord.ext import commands
 from discord.utils import get
 from pathlib import Path
+import requests
 
 from bot import config
 from bot.music import Queue, Song, SongRequestError
@@ -194,17 +195,23 @@ class Music(commands.Cog):
     @app_commands.command(name='songinfo', description='Displays info about the currently playing song')
     @app_commands.describe(index='index')
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
+        await self.info_helper(self, interaction, index)
+        
+    @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
+    @app_commands.describe(index='index')
+    async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
+        await self.info_helper(self, interaction, index)
+        
+    def info_helper(self, interaction: discord.Interaction, index: int = 0):
         '''Print out more information on the song currently playing.'''
 
         queue = self.music_queues.get(interaction.guild)
 
         if index not in range(len(queue) + 1):
-            await interaction.response.send_message('A song does not exist at that index in the queue.')
-            return
+            return interaction.response.send_message('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
-        await interaction.response.send_message(embed=embed)
-        
+        return interaction.response.send_message(embed=embed)
         
     @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
     async def queueview(self, interaction: discord.Interaction):
@@ -578,6 +585,62 @@ class Music(commands.Cog):
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
         queue.clear_skip_votes()
+
+
+    async def stream_song(self, guild: discord.Guild, prompt: str):
+        '''Streams a YouTube video's audio into a VC.'''
+        FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+
+        audio_dir = os.path.join('.', 'audio')
+        audio_path = os.path.join(audio_dir, f'{guild.id}')
+        output_id = guild.id + 1
+        output_path = os.path.join(audio_dir, f'{output_id}')
+        
+        try:
+            os.remove(audio_path + '.opus')
+        except:
+            pass
+        
+        try:
+            os.remove(output_path + '.opus')
+        except:
+            pass
+
+        voice = get(self.bot.voice_clients, guild=guild)
+        queue = self.music_queues.get(guild)
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'noplaylist': True,
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'opus',
+                'preferredquality': '192',
+            }],
+            'outtmpl': audio_path
+        }
+
+        Path(audio_dir).mkdir(parents=True, exist_ok=True)
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            try:
+                ydl.download([f'{song.url}'])
+            except:
+                await self.play_all_songs(guild)
+                print('Error downloading song. Skipping.')
+                return
+        
+        # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
+        voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
+        queue.clear_skip_votes()
+
+
+    def search(query):
+        with yt_dlp.YoutubeDL({'format': 'bestaudio', 'noplaylist':'True'}) as ydl:
+            try: requests.get(query)
+            except: info = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
+            else: info = ydl.extract_info(query, download=False)
+        return (info, info['formats'][0]['url'])
+
 
     async def wait_for_end_of_song(self, guild: discord.Guild):
         voice = get(self.bot.voice_clients, guild=guild)
