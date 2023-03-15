@@ -201,6 +201,7 @@ class Music(commands.Cog):
     @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
     @app_commands.describe(index='index')
     async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
+        await interaction.response.defer()
         await self.info_helper(interaction, index)
         
     def info_helper(self, interaction: discord.Interaction, index: int = 0):
