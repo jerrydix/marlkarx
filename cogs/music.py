@@ -207,7 +207,7 @@ class Music(commands.Cog):
 
         queue = self.music_queues.get(interaction.guild)
 
-        if index not in range(len(queue) + 1):
+        if index not in range(len(queue)):
             return interaction.response.send_message('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
