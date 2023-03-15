@@ -339,7 +339,6 @@ class Music(commands.Cog):
                 return
             music_queue.append(song)
             if first:
-                self.play_song(interaction.guild, song)
                 await interaction.followup.send(f'Queued all tracks from the **{list}** playlist.')
                 first = False
  
