@@ -310,6 +310,9 @@ class Music(commands.Cog):
         first = True
         list = data['playlists'][playlist.value]['name']
         
+        if voice is None or not voice.is_connected():
+            await channel.connect()
+        
         for track in data['playlists'][playlist.value]['tracks']:
             try:
                 song = Song(f'ytsearch1:{track}', author=interaction.user)
@@ -321,9 +324,6 @@ class Music(commands.Cog):
                 self.play_song(interaction.guild, song)
                 await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
                 first = False
-            
-        if voice is None or not voice.is_connected():
-            await channel.connect()
  
         await self.play_all_songs(interaction.guild)
 
