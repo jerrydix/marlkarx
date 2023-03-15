@@ -236,7 +236,7 @@ class Music(commands.Cog):
     
     @app_commands.command(name='pause', description='Pause the currently playing song')
     async def pause(self, interaction: discord.Interaction):
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=False)
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         
         if not self.client_in_same_channel(interaction.user, interaction.guild):
