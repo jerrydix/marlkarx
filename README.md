@@ -9,14 +9,5 @@ For setting up the bot and getting the ping, imagine and complete commands up to
 ``` 
 "token": "YOUR_TOKEN",
 "openai_key": "YOUR_OPENAI_KEY",
-"games": [
-{
-  "name": "GAME_NAME",
-  "players": [
-    DISCORD_ID_PLAYER1,
-    DISCORD_ID_PLAYER2,
-    ...
-  ]
-},
-...
-]
+"games": [],
+"playlists": []
