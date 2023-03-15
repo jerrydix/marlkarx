@@ -206,7 +206,7 @@ class Music(commands.Cog):
             return interaction.followup.send('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
-        return interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed)
         
         
     @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
@@ -218,7 +218,7 @@ class Music(commands.Cog):
             return interaction.followup.send('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
-        return interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed)
     
         
     @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
