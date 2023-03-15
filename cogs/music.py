@@ -91,7 +91,7 @@ class Music(commands.Cog):
         if self.client_in_same_channel(interaction.user, interaction.guild):
             voice.stop()
             queue.clear()
-            await interaction.response.send_message('Stopping playback')
+            await interaction.response.send_message('Stopping playback.')
             await voice.disconnect()
         else:
             await interaction.response.send_message('You\'re not in a voice channel with me.')
@@ -200,25 +200,26 @@ class Music(commands.Cog):
     @app_commands.command(name='songinfo', description='Displays info about the currently playing song')
     @app_commands.describe(index='index')
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
-        await interaction.response.defer()
-        await self.info_helper(interaction, index)
-        
-    @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
-    @app_commands.describe(index='index')
-    async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
-        await interaction.response.defer()
-        await self.info_helper(interaction, index)
-        
-    def info_helper(self, interaction: discord.Interaction, index: int = 0):
-        '''Print out more information on the song currently playing.'''
-
         queue = self.music_queues.get(interaction.guild)
 
         if index not in range(len(queue) + 1):
             return interaction.followup.send('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
-        return interaction.followup.send(embed=embed)
+        return interaction.response.send_message(embed=embed)
+        
+        
+    @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
+    @app_commands.describe(index='index')
+    async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
+        queue = self.music_queues.get(interaction.guild)
+
+        if index not in range(len(queue) + 1):
+            return interaction.followup.send('A song does not exist at that index in the queue.')
+
+        embed = queue.get_embed(index)
+        return interaction.response.send_message(embed=embed)
+    
         
     @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
     async def queueview(self, interaction: discord.Interaction):
@@ -655,7 +656,7 @@ class Music(commands.Cog):
     async def wait_for_end_of_song(self, guild: discord.Guild):
         voice = get(self.bot.voice_clients, guild=guild)
         global paused
-        while voice.is_playing() and not paused:
+        while voice.is_playing() or paused:
             await asyncio.sleep(1)
 
     async def inactivity_disconnect(self, guild: discord.Guild):
