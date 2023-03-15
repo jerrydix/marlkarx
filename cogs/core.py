@@ -109,7 +109,7 @@ class Core(commands.Cog):
                                                               ['/complete <prompt>',
                                                                'Make Marl Karx write a text based on your prompt.'],
                                                               ['/purge <amount>',
-                                                               'Delete the last <amount> messages.']]) + '```')
+                                                               'Delete the last <amount> messages.']]) + '\n\nMusic commands:' + tabulate([['/play <prompt>', 'Marl Karx plays the desired song for you. (Resumes playback if no argument given)'], ['/pause', 'Marl Karx pauses the playback.'], ['/skip', 'Marl Karx skips the currently playing song.'], ['/stop', 'Marl Karx stops the playback and clear the queue.'], ['/nowplaying <index> || /songinfo <index>', 'Displays info about the song at <index> in the queue. (Current song if no index given)'], ['/createplaylist <name>', 'Marl Karx creates a playlist with the specified name.'], ['/playlist <name>', 'Marl Karx enqueues the desired playlist.'], ['/playlistadd <playlist> <song>', 'Marl Karx adds <song> to <playlist>.']]) + '```')
 
 
     @app_commands.command(name='ping', description='Get the squad together')

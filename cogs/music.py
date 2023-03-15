@@ -61,6 +61,8 @@ class Music(commands.Cog):
             paused = False;
             await interaction.followup.send('Resumed song.')
             return
+        elif prompt == '':
+            await interaction.followup.send('Cannot process an empty prompt.')
    
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
