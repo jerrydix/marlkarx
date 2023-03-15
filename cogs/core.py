@@ -31,7 +31,7 @@ class Core(commands.Cog):
             game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
             i += 1
     
-    def pick_quote():
+    def pick_quote(self):
         global l_quote
         quote = random.randint(0, len(quotes) - 1)
         while l_quote == quote:
@@ -46,11 +46,11 @@ class Core(commands.Cog):
     async def send_daily_quote(self):
         if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
             channel = self.bot.get_channel(779824836498948118)
-            await channel.send('**Tägliches Zitat:**\n*\"' + pick_quote() + '\"*')
+            await channel.send('**Tägliches Zitat:**\n*\"' + self.pick_quote(self) + '\"*')
         
     @app_commands.command(name='quote', description='Marl Karx quotes Karl Marx')
     async def quote(self, interaction: discord.Interaction):
-        await interaction.response.send_message('*\"' + pick_quote() + '\"*')
+        await interaction.response.send_message('*\"' + self.pick_quote(self) + '\"*')
 
 
     @app_commands.command(name='quoteadd', description='Extend Marl Karx\' quote collection')
