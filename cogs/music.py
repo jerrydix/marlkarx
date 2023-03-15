@@ -195,6 +195,7 @@ class Music(commands.Cog):
     @app_commands.command(name='songinfo', description='Displays info about the currently playing song')
     @app_commands.describe(index='index')
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
+        await interaction.response.defer()
         await self.info_helper(interaction, index)
         
     @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
@@ -208,10 +209,10 @@ class Music(commands.Cog):
         queue = self.music_queues.get(interaction.guild)
 
         if index not in range(len(queue) + 1):
-            return interaction.response.send_message('A song does not exist at that index in the queue.')
+            return interaction.followup.send('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
-        return interaction.response.send_message(embed=embed)
+        return interaction.followup.send(embed=embed)
         
     @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
     async def queueview(self, interaction: discord.Interaction):
