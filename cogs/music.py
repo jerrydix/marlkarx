@@ -207,7 +207,7 @@ class Music(commands.Cog):
 
         queue = self.music_queues.get(interaction.guild)
 
-        if index not in range(len(queue)):
+        if index not in range(len(queue) + 1):
             return interaction.response.send_message('A song does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
@@ -329,7 +329,7 @@ class Music(commands.Cog):
             music_queue.append(song)
             if first:
                 self.play_song(interaction.guild, song)
-                await interaction.followup.send(f'Queued all tracks form the **{list}** playlist')
+                await interaction.followup.send(f'Queued all tracks from the **{list}** playlist.')
                 first = False
  
         await self.play_all_songs(interaction.guild)
