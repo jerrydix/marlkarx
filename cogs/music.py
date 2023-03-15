@@ -24,6 +24,7 @@ def set_str_len(s: str, length: int):
     return s.ljust(length)[:length]
 
 playlists = []
+paused = False;
 
 class Music(commands.Cog):
 
@@ -43,6 +44,7 @@ class Music(commands.Cog):
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         await interaction.response.defer(ephemeral=False)
+        global paused
 
         try:
             channel = interaction.user.voice.channel
@@ -54,8 +56,9 @@ class Music(commands.Cog):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
             
-        if prompt == '' and voice.is_paused():
+        if prompt == '' and voice.is_paused() and paused:
             voice.resume()
+            paused = False;
             await interaction.followup.send('Resumed song.')
             return
    
@@ -119,6 +122,8 @@ class Music(commands.Cog):
 
         if len(queue.skip_voters) >= required_votes:
             await interaction.response.send_message('Skipping song after successful vote.')
+            global paused
+            paused = False;
             voice.stop()
         else:
             await interaction.response.send_message(f'You voted to skip this song. {required_votes - len(queue.skip_voters)} more votes are '
@@ -230,6 +235,7 @@ class Music(commands.Cog):
     
     @app_commands.command(name='pause', description='Pause the currently playing song')
     async def pause(self, interaction: discord.Interaction):
+        await interaction.response.defer()
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         
         if not self.client_in_same_channel(interaction.user, interaction.guild):
@@ -240,8 +246,10 @@ class Music(commands.Cog):
             await interaction.response.send_message('I don\'t have anything playing right now.')
             return
         
+        global paused
+        paused = True
         voice.pause()
-        await interaction.response.send_message('Paused song.')
+        await interaction.followup.send('Paused song.')
        
         
     @app_commands.command(name='createplaylist', description='Create a new playlist')
@@ -646,7 +654,8 @@ class Music(commands.Cog):
 
     async def wait_for_end_of_song(self, guild: discord.Guild):
         voice = get(self.bot.voice_clients, guild=guild)
-        while voice.is_playing():
+        global paused
+        while voice.is_playing() and not paused:
             await asyncio.sleep(1)
 
     async def inactivity_disconnect(self, guild: discord.Guild):
