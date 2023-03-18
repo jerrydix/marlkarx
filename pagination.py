@@ -8,10 +8,10 @@ class QueueView(discord.ui.View):
     sep: int = 10
     
     async def send(self, interaction: discord.Interaction):
-        self.message = await interaction.response.send_message('**Showing the queue:**')
+        self.message = await interaction.response.send_message(f'Currently playing: **{self.data.current_song().name}**, Requested by: {self.data.current_song().requested_by()}')
         self.message = await interaction.channel.send(view=self)
         await self.update_msg(self.data[:self.sep])
-        
+         
     def create_embed(self, data):
         embed = discord.Embed(title='Current Queue:', colour=discord.Colour.dark_red())
         for i in data:
