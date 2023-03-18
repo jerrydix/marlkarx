@@ -42,7 +42,7 @@ class Queue(list):
         if len(song.description) > 300:
             song['description'] = f'{song.description[:300]}...'
 
-        embed = discord.Embed(title="Audio Info")
+        embed = discord.Embed(title="Audio Info", colour=discord.Colour.dark_red())
         embed.set_thumbnail(url=song.thumbnail)
         embed.add_field(name='Song', value=song.title, inline=True)
         embed.add_field(name='Uploader', value=song.uploader, inline=True)

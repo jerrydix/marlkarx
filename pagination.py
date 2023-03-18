@@ -8,7 +8,7 @@ class QueueView(discord.ui.View):
     sep: int = 10
     
     async def send(self, interaction: discord.Interaction):
-        self.message = await interaction.response.send_message(f'Currently playing: **{self.data[0].title}**, Requested by: {self.data[0].requested_by}')
+        self.message = await interaction.response.send_message(f'Currently playing: **{self.data.current_song.title}**, Requested by: {self.data.current_song.requested_by}')
         self.message = await interaction.channel.send(view=self)
         await self.update_msg(self.data[:self.sep])
          
