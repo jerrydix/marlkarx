@@ -137,6 +137,7 @@ class Core(commands.Cog):
             json.dump(data, c)
             c.close()
             await interaction.response.send_message(f"**{user.display_name}** was added to the **{game.name}** ping")
+            await self.bot.tree.sync(guild=interaction.guild)
 
 
     @app_commands.command(name='pingremove', description='Remove a user from a ping command')
@@ -150,6 +151,8 @@ class Core(commands.Cog):
             json.dump(data, c)
             c.close()
             await interaction.response.send_message(f"**{user.display_name}** was removed from the **{game.name}** ping")
+            await self.bot.tree.sync(guild=interaction.guild)
+            
         else:
             await interaction.response.send_message(
                 f"**{user.display_name}** is not part of the **{game.name}** ping, cannot remove user")
@@ -173,6 +176,7 @@ class Core(commands.Cog):
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
         await interaction.response.send_message(f"**{game}** was added to the ping system")
+        await self.bot.tree.sync(guild=interaction.guild)
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
@@ -193,6 +197,7 @@ class Core(commands.Cog):
                     game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
                     i += 1
                 await interaction.response.send_message(f"**{game.name}** was removed from the ping system")
+                await self.bot.tree.sync(guild=interaction.guild)
                 return
         await interaction.response.send_message(f"**{game.name}** is not part of the ping system, cannot remove it")
 
