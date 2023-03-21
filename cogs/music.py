@@ -270,7 +270,6 @@ class Music(commands.Cog):
             json.dump(data, c)
             c.close()
             await interaction.response.send_message(f'Added playlist **{name}**')
-            await self.bot.tree.sync(guild=interaction.guild)
             
         elif 'playlists' in data:
             await interaction.response.send_message('Cannot add more than 10 playlists.')

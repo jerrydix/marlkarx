@@ -74,6 +74,12 @@ async def on_member_remove(member: discord.Member):
         await bot.get_channel(751907139425009694).send(f"{member.display_name} left the server.")
     elif member.guild.id == 170953505610137600:
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
+     
+        
+@bot.command()
+@commands.is_owner()
+async def reload(ctx, extension):
+    bot.reload_extension(f"cogs.{extension}")
         
         
 bot.run(data['token'])
