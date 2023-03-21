@@ -81,5 +81,6 @@ bot.run(data['token'])
 @commands.is_owner()
 async def reload(ctx, extension):
     bot.reload_extension(f"cogs.{extension}")
+    await ctx.send('test')
         
         
