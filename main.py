@@ -77,9 +77,8 @@ async def on_member_remove(member: discord.Member):
      
 bot.run(data['token'])  
 
-      
-@bot.command()
-@commands.is_owner()
-async def reload(ctx, extension):
+def run_reload(extension):
+    reload(extension)      
+
+async def reload(extension):
     bot.reload_extension(f"cogs.{extension}")
-    await ctx.send('test')
