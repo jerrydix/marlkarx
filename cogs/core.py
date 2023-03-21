@@ -175,7 +175,6 @@ class Core(commands.Cog):
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
         await interaction.response.send_message(f"**{game}** was added to the ping system")
-        main.reload('core')
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
