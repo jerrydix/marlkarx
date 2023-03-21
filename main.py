@@ -76,10 +76,3 @@ async def on_member_remove(member: discord.Member):
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
      
 bot.run(data['token'])  
-
-      
-@bot.command()
-@commands.is_owner()
-async def reload(ctx, extension):
-    bot.reload_extension(f"cogs.{extension}")
-    await ctx.send('test')
