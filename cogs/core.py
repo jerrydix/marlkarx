@@ -10,7 +10,6 @@ from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
 import webcrawler
-from main import reload
 
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
 quotes = webcrawler.crawl_quotes(quote_url)
