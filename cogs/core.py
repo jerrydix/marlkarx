@@ -113,7 +113,7 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='ping', description='Get the squad together')
-    @app_commands.checks.cooldown(1, 15, key=lambda i: (i.user.id))
+    @app_commands.checks.cooldown(1, 60,  key=lambda i: (i.user.id))
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
@@ -174,7 +174,6 @@ class Core(commands.Cog):
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
         await interaction.response.send_message(f"**{game}** was added to the ping system")
-        await reload('cogs')
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
@@ -251,7 +250,7 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='purge', description='Delete a desired amount of messages')
-    @app_commands.checks.has_role(781223345319706646)
+    @app_commands.checks.cooldown(1, 120,  key=lambda i: (i.user.id))
     @app_commands.describe(amount='amount')
     async def purge(self, interaction: discord.Interaction, amount: int):
         if 25 >= amount > 0:
