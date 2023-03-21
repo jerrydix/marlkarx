@@ -77,8 +77,6 @@ async def on_member_remove(member: discord.Member):
      
 bot.run(data['token'])  
 
-def run_reload(extension):
-    reload(extension)      
 
 async def reload(extension):
     bot.reload_extension(f"cogs.{extension}")
