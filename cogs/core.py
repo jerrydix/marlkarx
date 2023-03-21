@@ -10,7 +10,7 @@ from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
 import webcrawler
-from main import run_reload
+from main import reload
 
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
 quotes = webcrawler.crawl_quotes(quote_url)
@@ -175,7 +175,7 @@ class Core(commands.Cog):
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
         await interaction.response.send_message(f"**{game}** was added to the ping system")
-        await run_reload('cogs')
+        await reload('cogs')
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
