@@ -33,8 +33,8 @@ class Client(commands.Bot):
         print(f'Bot with id: {bot.application_id} started running')
         try:
             synced = await self.tree.sync()
-            # for i in synced:
-                # print(i.name)
+            for i in synced:
+                print(i.name)
             print(f"Synced {len(synced)} command(s)")
         except Exception as e:
             print(e)
@@ -78,6 +78,6 @@ async def on_member_remove(member: discord.Member):
 @bot.tree.command()
 async def reloadcore(ctx):
     bot.reload_extension(f"cogs.core")
-    await ctx.send(f'core reloaded')
+    await ctx.response.send_message(f'core reloaded')
     
 bot.run(data['token'])  
