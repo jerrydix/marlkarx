@@ -76,8 +76,8 @@ async def on_member_remove(member: discord.Member):
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
 @bot.tree.command()
-async def reload(ctx, extension):
-    bot.reload_extension(f"cogs.{extension}")
-    await ctx.send(f'{extension} reloaded')
+async def reloadcore(ctx):
+    bot.reload_extension(f"cogs.core")
+    await ctx.send(f'core reloaded')
     
 bot.run(data['token'])  
