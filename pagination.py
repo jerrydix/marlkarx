@@ -84,7 +84,7 @@ class QueueView(discord.ui.View):
 class HelpView(discord.ui.View):
     current_page: int = 1
     
-    core_help: str = '```Core Commands:\n' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'],
+    core_help: str = '```Core commands:\n' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'],
                                                               ['/quoteadd <quote>',
                                                                'Add a quote to Marl Karx\' quote collection.'],
                                                               ['/echo <message>', 'Marl Karx quotes you.'],
@@ -114,7 +114,7 @@ class HelpView(discord.ui.View):
     music_help: str = '```Music commands:\n' + tabulate([['/play <prompt>', 'Marl Karx plays the desired song for you. (Resumes playback if no argument given)'], ['/pause', 'Marl Karx pauses the playback.'], ['/skip', 'Marl Karx skips the currently playing song.'], ['/stop', 'Marl Karx stops the playback and clear the queue.'], ['/nowplaying <index> || /songinfo <index>', 'Displays info about the song at <index> in the queue. (Current song if no index given)'], ['/createplaylist <name>', 'Marl Karx creates a playlist with the specified name.'], ['/playlist <name>', 'Marl Karx enqueues the desired playlist.'], ['/playlistadd <playlist> <song>', 'Marl Karx adds <song> to <playlist>.']]) + '```'
     
     async def send(self, interaction: discord.Interaction):
-        self.message = await interaction.response.send_message(f'**Marl Karx help Page:**')
+        self.message = await interaction.response.send_message(f'**Marl Karx Help Page:**')
         self.message = await interaction.channel.send(view=self)
         await self.update_msg()
     
