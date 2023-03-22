@@ -1,5 +1,5 @@
 import discord
-import tabulate
+from tabulate import tabulate
 
 class QueueView(discord.ui.View):
     

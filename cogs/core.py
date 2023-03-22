@@ -2,8 +2,6 @@ import datetime
 import json
 import random
 import openai
-from bot import config
-from tabulate import tabulate
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -76,10 +74,10 @@ class Core(commands.Cog):
     @app_commands.command(name='choose', description='Marl Karx chooses a random number from 1 to <max>')
     @app_commands.describe(max='max')
     async def choose(self, interaction: discord.Interaction, max: int):
-        if x <= 0:
+        if max <= 0:
             await interaction.response.send_message('<max> has to be greater than 0')
             return
-        x = random.randint(1, x)
+        x = random.randint(1, max)
         await interaction.response.send_message(x)
 
 
