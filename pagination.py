@@ -1,6 +1,4 @@
 import discord
-from discord.ext import commands
-from discord import app_commands
 import tabulate
 
 class QueueView(discord.ui.View):
@@ -131,7 +129,7 @@ class HelpView(discord.ui.View):
             case 1:
                 return self.core_help
             case 2: 
-                return self.music_help\
+                return self.music_help
                     
     def update_buttons(self):
         if self.current_page == 1:
