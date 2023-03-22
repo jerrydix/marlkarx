@@ -83,7 +83,7 @@ class QueueView(discord.ui.View):
         await self.update_msg(self.data[from_item:])
     
         
-class HelpView(discord.ui.view):
+class HelpView(discord.ui.View):
     current_page: int = 1
     
     core_help: str = '```Core Commands:\n' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'],
