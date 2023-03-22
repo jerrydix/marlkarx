@@ -9,6 +9,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
+from pagination import HelpView
 import webcrawler
 
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
@@ -84,32 +85,8 @@ class Core(commands.Cog):
 
     @app_commands.command(name='help', description='Get a description of all the commands')
     async def help(self, interaction: discord.Interaction):
-        await interaction.response.send_message('```' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'],
-                                                              ['/quoteadd <quote>',
-                                                               'Add a quote to Marl Karx\' quote collection.'],
-                                                              ['/echo <message>', 'Marl Karx quotes you.'],
-                                                              ['/manifest',
-                                                               'Get the Manifest of the Communist Party for free!'],
-                                                              ['/choose <max>',
-                                                               'Marl Karx chooses a random number from 1 to <max>.'],
-                                                              ['/ping <game>',
-                                                               'Ping all users who are added to this game ping.'],
-                                                              ['/pingadd <game> <user>',
-                                                               'Add a user to a specific game ping.'],
-                                                              ['/pingremove <game> <user>',
-                                                               'Remove a user from a specific game ping.'],
-                                                              ['/pinglist <game>', 'List all users of a game ping.'],
-                                                              ['/pingaddgame <name>', 'Add a game to the ping system.'],
-                                                              ['/pingremovegame <game>',
-                                                               'Remove a game from the ping system.'],
-                                                              ['/pinglistgames',
-                                                               'List all games subscribed to the ping system.'],
-                                                              ['/imagine <prompt>',
-                                                               'Make Marl Karx create an image out of your prompt.'],
-                                                              ['/complete <prompt>',
-                                                               'Make Marl Karx write a text based on your prompt.'],
-                                                              ['/purge <amount>',
-                                                               'Delete the last <amount> messages.']]) + '\n\nMusic commands:' + tabulate([['/play <prompt>', 'Marl Karx plays the desired song for you. (Resumes playback if no argument given)'], ['/pause', 'Marl Karx pauses the playback.'], ['/skip', 'Marl Karx skips the currently playing song.'], ['/stop', 'Marl Karx stops the playback and clear the queue.'], ['/nowplaying <index> || /songinfo <index>', 'Displays info about the song at <index> in the queue. (Current song if no index given)'], ['/createplaylist <name>', 'Marl Karx creates a playlist with the specified name.'], ['/playlist <name>', 'Marl Karx enqueues the desired playlist.'], ['/playlistadd <playlist> <song>', 'Marl Karx adds <song> to <playlist>.']]) + '```')
+        view = HelpView()
+        await view.send(interaction)
 
 
     @app_commands.command(name='ping', description='Get the squad together')

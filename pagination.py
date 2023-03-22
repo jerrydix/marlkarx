@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+import tabulate
 
 class QueueView(discord.ui.View):
     
@@ -82,6 +83,82 @@ class QueueView(discord.ui.View):
         await self.update_msg(self.data[from_item:])
     
         
+class HelpView(discord.ui.view):
+    current_page: int = 1
+    
+    core_help: str = '```Core Commands:\n' + tabulate([['/quote', 'Marl Karx quotes Karl Marx.'],
+                                                              ['/quoteadd <quote>',
+                                                               'Add a quote to Marl Karx\' quote collection.'],
+                                                              ['/echo <message>', 'Marl Karx quotes you.'],
+                                                              ['/manifest',
+                                                               'Get the Manifest of the Communist Party for free!'],
+                                                              ['/choose <max>',
+                                                               'Marl Karx chooses a random number from 1 to <max>.'],
+                                                              ['/ping <game>',
+                                                               'Ping all users who are added to this game ping.'],
+                                                              ['/pingadd <game> <user>',
+                                                               'Add a user to a specific game ping.'],
+                                                              ['/pingremove <game> <user>',
+                                                               'Remove a user from a specific game ping.'],
+                                                              ['/pinglist <game>', 'List all users of a game ping.'],
+                                                              ['/pingaddgame <name>', 'Add a game to the ping system.'],
+                                                              ['/pingremovegame <game>',
+                                                               'Remove a game from the ping system.'],
+                                                              ['/pinglistgames',
+                                                               'List all games subscribed to the ping system.'],
+                                                              ['/imagine <prompt>',
+                                                               'Make Marl Karx create an image out of your prompt.'],
+                                                              ['/complete <prompt>',
+                                                               'Make Marl Karx write a text based on your prompt.'],
+                                                              ['/purge <amount>',
+                                                               'Delete the last <amount> messages.']]) + '```'
+    
+    music_help: str = '```Music commands:\n' + tabulate([['/play <prompt>', 'Marl Karx plays the desired song for you. (Resumes playback if no argument given)'], ['/pause', 'Marl Karx pauses the playback.'], ['/skip', 'Marl Karx skips the currently playing song.'], ['/stop', 'Marl Karx stops the playback and clear the queue.'], ['/nowplaying <index> || /songinfo <index>', 'Displays info about the song at <index> in the queue. (Current song if no index given)'], ['/createplaylist <name>', 'Marl Karx creates a playlist with the specified name.'], ['/playlist <name>', 'Marl Karx enqueues the desired playlist.'], ['/playlistadd <playlist> <song>', 'Marl Karx adds <song> to <playlist>.']]) + '```'
+    
+    async def send(self, interaction: discord.Interaction):
+        self.message = await interaction.response.send_message(f'**Marl Karx help Page:**')
+        self.message = await interaction.channel.send(view=self)
+        await self.update_msg()
+    
+    
+    async def update_msg(self):
+        self.update_buttons()
+        await self.message.edit(content=self.choose_page(self.current_page), view=self)
+       
+        
+    def choose_page(self, number: int):
+        match number:
+            case 1:
+                return self.core_help
+            case 2: 
+                return self.music_help\
+                    
+    def update_buttons(self):
+        if self.current_page == 1:
+            self.prev_button.disabled = True
+            self.prev_button.style = discord.ButtonStyle.gray
+        else:
+            self.prev_button.disabled = False
+            self.prev_button.style = discord.ButtonStyle.red
+        
+        if self.current_page == 2:
+            self.next_button.disabled = True
+            self.next_button.style = discord.ButtonStyle.gray
+        else:
+            self.next_button.disabled = False
+            self.next_button.style = discord.ButtonStyle.red
         
     
+    @discord.ui.button(label='<', style=discord.ButtonStyle.primary)
+    async def prev_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        self.current_page -= 1
+        await self.update_msg()
+        
+        
+    @discord.ui.button(label='>', style=discord.ButtonStyle.primary)
+    async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        self.current_page += 1
+        await self.update_msg()
 
