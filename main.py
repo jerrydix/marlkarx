@@ -111,4 +111,16 @@ async def load(interaction: discord.Interaction, extension: str):
             print(e)
     await interaction.response.send_message('Loaded cog');
     
+@bot.tree.command(name='sync')
+async def sync(interaction: discord.Interaction):
+    try:
+        synced = await bot.tree.sync()
+        for i in synced:
+            print(i.name)
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
+    await interaction.response.send_message('Synced');
+
+    
 bot.run(data['token'])  
