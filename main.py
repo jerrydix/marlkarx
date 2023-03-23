@@ -111,7 +111,7 @@ async def load(interaction: discord.Interaction, extension: str):
             print(e)
     await interaction.response.send_message('Loaded cog');
     
-@bot.tree.command(name='sync')
+@bot.tree.command(name='synccommands')
 async def sync(interaction: discord.Interaction):
     try:
         synced = await bot.tree.sync()
