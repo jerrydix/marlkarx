@@ -89,32 +89,35 @@ async def reload(interaction: discord.Interaction, extension: str):
     
 @bot.tree.command(name='unload')
 async def unload(interaction: discord.Interaction, extension: str):
+    await interaction.response.defer()
     await bot.unload_extension(f"cogs.{extension}")
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
-    await interaction.response.send_message('Unloaded cog');
+    await interaction.followup.send('Unloaded cog');
     
 @bot.tree.command(name='load')
 async def load(interaction: discord.Interaction, extension: str):
+    await interaction.response.defer()
     await bot.load_extension(f"cogs.{extension}")
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
-    await interaction.response.send_message('Loaded cog');
+    await interaction.followup.send('Loaded cog');
     
 @bot.tree.command(name='sync')
 async def sync(interaction: discord.Interaction):
+    await interaction.response.defer()
     try:
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
-    await interaction.response.send_message('Synced');
+    await interaction.followup.send('Synced');
 
     
 bot.run(data['token'])  
