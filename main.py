@@ -92,8 +92,6 @@ async def unload(interaction: discord.Interaction, extension: str):
     await bot.unload_extension(f"cogs.{extension}")
     try:
         synced = await bot.tree.sync()
-        for i in synced:
-            print(i.name)
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
@@ -104,8 +102,6 @@ async def load(interaction: discord.Interaction, extension: str):
     await bot.load_extension(f"cogs.{extension}")
     try:
         synced = await bot.tree.sync()
-        for i in synced:
-            print(i.name)
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
@@ -115,8 +111,6 @@ async def load(interaction: discord.Interaction, extension: str):
 async def sync(interaction: discord.Interaction):
     try:
         synced = await bot.tree.sync()
-        for i in synced:
-            print(i.name)
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
             print(e)
