@@ -135,9 +135,11 @@ class Core(commands.Cog):
     @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     async def ping_add_game(self, interaction: discord.Interaction, game: str):
+        await interaction.response.defer()
+        global data
         for i in data['games']:
             if i['name'] == game:
-                await interaction.response.send_message(f"**{game}** is already pingable, cannot add game twice")
+                await interaction.followup.send(f"**{game}** is already pingable, cannot add game twice")
                 return
         c = open('config.json', 'w')
         game_obj = {'name': game, 'players': []}
@@ -145,10 +147,18 @@ class Core(commands.Cog):
         data['games'].append(game_obj)
         json.dump(data, c)
         c.close()
+        c = open('config.json')
+        data = json.load(c)
+        c.close()
         global game_choices
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
-        await interaction.response.send_message(f"**{game}** was added to the ping system")
+        try:
+            synced = await self.bot.tree.sync()
+            print(f"Synced {len(synced)} command(s)")
+        except Exception as e:
+            print(e)
+        await interaction.followup.send(f"**{game}** was added to the ping system")
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
@@ -156,11 +166,16 @@ class Core(commands.Cog):
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping_remove_game(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
+        await interaction.response.defer()
+        global data
         for i in data['games']:
             if i['name'] == game.name:
                 c = open('config.json', 'w')
                 data['games'].remove(i)
                 json.dump(data, c)
+                c.close()
+                c = open('config.json')
+                data = json.load(c)
                 c.close()
                 global game_choices
                 game_choices = []
@@ -168,9 +183,14 @@ class Core(commands.Cog):
                 while i < len(data['games']):
                     game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
                     i += 1
-                await interaction.response.send_message(f"**{game.name}** was removed from the ping system")
+                try:
+                    synced = await self.bot.tree.sync()
+                    print(f"Synced {len(synced)} command(s)")
+                except Exception as e:
+                    print(e)
+                await interaction.followup.send(f"**{game.name}** was removed from the ping system")
                 return
-        await interaction.response.send_message(f"**{game.name}** is not part of the ping system, cannot remove it")
+        await interaction.followup.send(f"**{game.name}** is not part of the ping system, cannot remove it")
 
 
     @app_commands.command(name='pinglist', description='List all users of a game ping')

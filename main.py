@@ -75,9 +75,49 @@ async def on_member_remove(member: discord.Member):
     elif member.guild.id == 170953505610137600:
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
-@bot.tree.command()
-async def reloadcore(ctx):
-    bot.reload_extension(f"cogs.core")
-    await ctx.response.send_message(f'core reloaded')
+@bot.tree.command(name='reload')
+async def reload(interaction: discord.Interaction, extension: str):
+    await bot.reload_extension(f"cogs.{extension}")
+    try:
+        synced = await bot.tree.sync()
+        for i in synced:
+            print(i.name)
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
+    await interaction.response.send_message('Reloaded cog');
+    
+@bot.tree.command(name='unload')
+async def unload(interaction: discord.Interaction, extension: str):
+    await interaction.response.defer()
+    await bot.unload_extension(f"cogs.{extension}")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
+    await interaction.followup.send('Unloaded cog');
+    
+@bot.tree.command(name='load')
+async def load(interaction: discord.Interaction, extension: str):
+    await interaction.response.defer()
+    await bot.load_extension(f"cogs.{extension}")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
+    await interaction.followup.send('Loaded cog');
+    
+@bot.tree.command(name='sync')
+async def sync(interaction: discord.Interaction):
+    await interaction.response.defer()
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
+    await interaction.followup.send('Synced');
+
     
 bot.run(data['token'])  
