@@ -77,17 +77,17 @@ async def on_member_remove(member: discord.Member):
 
 @bot.tree.command(name='reload')
 async def reload(interaction: discord.Interaction, extension: str):
-    bot.reload_extension(f"cogs.{extension}")
+    await bot.reload_extension(f"cogs.{extension}")
     await interaction.response.send_message('Reloaded cog');
     
 @bot.tree.command(name='unload')
 async def unload(interaction: discord.Interaction, extension: str):
-    bot.unload_extension(f"cogs.{extension}")
+    await bot.unload_extension(f"cogs.{extension}")
     await interaction.response.send_message('Unloaded cog');
     
 @bot.tree.command(name='load')
 async def load(interaction: discord.Interaction, extension: str):
-    bot.load_extension(f"cogs.{extension}")
+    await bot.load_extension(f"cogs.{extension}")
     await interaction.response.send_message('Loaded cog');
     
 bot.run(data['token'])  
