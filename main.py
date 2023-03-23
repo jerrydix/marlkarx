@@ -76,18 +76,39 @@ async def on_member_remove(member: discord.Member):
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
 @bot.tree.command(name='reload')
-async def reload(interaction: discord.Interaction, extension: str):
+async def reload(self, interaction: discord.Interaction, extension: str):
     await bot.reload_extension(f"cogs.{extension}")
+    try:
+        synced = await self.tree.sync()
+        for i in synced:
+            print(i.name)
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
     await interaction.response.send_message('Reloaded cog');
     
 @bot.tree.command(name='unload')
-async def unload(interaction: discord.Interaction, extension: str):
+async def unload(self, interaction: discord.Interaction, extension: str):
     await bot.unload_extension(f"cogs.{extension}")
+    try:
+        synced = await self.tree.sync()
+        for i in synced:
+            print(i.name)
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
     await interaction.response.send_message('Unloaded cog');
     
 @bot.tree.command(name='load')
-async def load(interaction: discord.Interaction, extension: str):
+async def load(self, interaction: discord.Interaction, extension: str):
     await bot.load_extension(f"cogs.{extension}")
+    try:
+        synced = await self.tree.sync()
+        for i in synced:
+            print(i.name)
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+            print(e)
     await interaction.response.send_message('Loaded cog');
     
 bot.run(data['token'])  
