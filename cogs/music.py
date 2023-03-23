@@ -344,7 +344,7 @@ class Music(commands.Cog):
             if first:
                 await interaction.followup.send(f'Queued all tracks from the **{list}** playlist.')
                 first = False
- 
+        print ('test')
         await self.play_all_songs(interaction.guild)
 
 
