@@ -12,7 +12,7 @@ For setting up the bot and getting the ping, imagine, complete and music command
 "token": "YOUR_TOKEN",
 "openai_key": "YOUR_OPENAI_KEY",
 "games": [],
-"playlists": []
+"playlists": []```
 
 Currently, the docker file is out of date, so you will have to install the needed dependencies via pip yourself.
 
