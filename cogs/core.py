@@ -135,6 +135,7 @@ class Core(commands.Cog):
     @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     async def ping_add_game(self, interaction: discord.Interaction, game: str):
+        global data
         for i in data['games']:
             if i['name'] == game:
                 await interaction.response.send_message(f"**{game}** is already pingable, cannot add game twice")
@@ -145,7 +146,6 @@ class Core(commands.Cog):
         data['games'].append(game_obj)
         json.dump(data, c)
         c.close()
-        global data
         c = open('config.json')
         data = json.load(c)
         c.close()
@@ -160,13 +160,13 @@ class Core(commands.Cog):
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping_remove_game(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
+        global data
         for i in data['games']:
             if i['name'] == game.name:
                 c = open('config.json', 'w')
                 data['games'].remove(i)
                 json.dump(data, c)
                 c.close()
-                global data
                 c = open('config.json')
                 data = json.load(c)
                 c.close()
