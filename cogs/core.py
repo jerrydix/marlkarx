@@ -145,6 +145,10 @@ class Core(commands.Cog):
         data['games'].append(game_obj)
         json.dump(data, c)
         c.close()
+        global data
+        c = open('config.json')
+        data = json.load(c)
+        c.close()
         global game_choices
         game_choices.append(
             discord.app_commands.Choice(name=data['games'][len(data['games']) - 1]['name'], value=len(data['games']) - 1))
@@ -161,6 +165,10 @@ class Core(commands.Cog):
                 c = open('config.json', 'w')
                 data['games'].remove(i)
                 json.dump(data, c)
+                c.close()
+                global data
+                c = open('config.json')
+                data = json.load(c)
                 c.close()
                 global game_choices
                 game_choices = []

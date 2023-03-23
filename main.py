@@ -75,9 +75,19 @@ async def on_member_remove(member: discord.Member):
     elif member.guild.id == 170953505610137600:
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
-@bot.tree.command()
-async def reloadcore(ctx):
-    bot.reload_extension(f"cogs.core")
-    await ctx.response.send_message(f'core reloaded')
+@bot.tree.command(name='reload')
+async def reload(interaction: discord.Interaction, extension: str):
+    bot.reload_extension(f"cogs.{extension}")
+    await interaction.response.send_message('Reloaded cog');
+    
+@bot.tree.command(name='unload')
+async def unload(interaction: discord.Interaction, extension: str):
+    bot.unload_extension(f"cogs.{extension}")
+    await interaction.response.send_message('Unloaded cog');
+    
+@bot.tree.command(name='load')
+async def load(interaction: discord.Interaction, extension: str):
+    bot.load_extension(f"cogs.{extension}")
+    await interaction.response.send_message('Loaded cog');
     
 bot.run(data['token'])  
