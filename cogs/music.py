@@ -331,10 +331,11 @@ class Music(commands.Cog):
         
         first = True
         list = data['playlists'][playlist.value]['name']
+        tracks = data['playlists'][playlist.value]['tracks']
         if shuffle:
-            list = random.sample(list, len(list))
+            random.shuffle(tracks)
         
-        for track in data['playlists'][playlist.value]['tracks']:
+        for track in tracks:
             try:
                 song = Song(f'ytsearch1:{track}', author=interaction.user)
             except SongRequestError as e:
