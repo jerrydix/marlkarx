@@ -366,7 +366,7 @@ class Music(commands.Cog):
     async def shuffle(self, interaction: discord.Interaction):
         queue = self.music_queues[interaction.guild]
         
-        if not self.client_in_same_channel(interaction.message.author, interaction.guild):
+        if not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.response.send_message('You\'re not in a voice channel with me.')
             return
 
