@@ -345,7 +345,7 @@ class Music(commands.Cog):
             if first:
                 await interaction.followup.send(f'Queued all tracks from the **{list}** playlist.')
                 if voice is None or not voice.is_connected():
-                    await channel.connect()   
+                    await channel.connect()
                 first = False
                 
         await self.play_all_songs(interaction.guild)
@@ -361,6 +361,25 @@ class Music(commands.Cog):
         for track in tracks:
             result += f'**{track}**\n'
         await interaction.response.send_message(result)
+        
+    @app_commands.command(name='shuffle', description='Shuffle the current queue')
+    async def shuffle(self, interaction: discord.Interaction):
+        queue = self.music_queues[interaction.guild]
+        
+        if not self.client_in_same_channel(interaction.message.author, interaction.guild):
+            await interaction.response.send_message('You\'re not in a voice channel with me.')
+            return
+
+        if not queue:
+            await interaction.response.send_message('I don\'t have anything in my queue right now.')
+            return
+        
+        result = random.sample(queue[1:len(queue) - 1], len(queue) - 1)
+        queue = result
+        await interaction.response.send_message('Shuffled queue.')
+        
+        
+
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
