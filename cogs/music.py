@@ -374,11 +374,8 @@ class Music(commands.Cog):
             await interaction.response.send_message('I don\'t have anything in my queue right now.')
             return
         
-        print(queue[1:len(queue) - 1])
-        print(len(queue) - 1)
-        
-        result = random.sample(queue[1:len(queue) - 1], len(queue) - 1)
-        queue = result
+        result = random.sample(queue, len(queue))
+        self.music_queues[interaction.guild] = result
         await interaction.response.send_message('Shuffled queue.')
         
         
