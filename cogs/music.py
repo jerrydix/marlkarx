@@ -76,11 +76,8 @@ class Music(commands.Cog):
         music_queue.append(song)
         await interaction.followup.send(f'Queued song: **{song.title}**')
 
-        print('test1')
         if voice is None or not voice.is_connected():
-            print('test2')
             await channel.connect()
-            print('test3')
 
         await self.play_all_songs(interaction.guild)
         
@@ -346,7 +343,7 @@ class Music(commands.Cog):
                 if voice is None or not voice.is_connected():
                     await channel.connect()   
                 first = False
-        print ('test')
+                
         await self.play_all_songs(interaction.guild)
 
 
@@ -543,12 +540,10 @@ class Music(commands.Cog):
 
     async def play_all_songs(self, guild: discord.Guild):
         queue = self.music_queues.get(guild)
-        print('before while')
+        
         # Play next song until queue is empty
         while queue:
-            print('in while before')
             await self.wait_for_end_of_song(guild)
-            print('in while after')
             song = queue.next_song()
 
             # if int(queue.count) > 0:
