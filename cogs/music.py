@@ -2,6 +2,7 @@ import asyncio
 import os
 import subprocess
 import validators
+import random
 from collections import defaultdict
 import json
 
@@ -308,9 +309,9 @@ class Music(commands.Cog):
 
 
     @app_commands.command(name='playlist', description='Play a playlist')
-    @app_commands.describe(playlist='playlist')
+    @app_commands.describe(playlist='playlist', shuffle='shuffle')
     @app_commands.choices(playlist=playlists)
-    async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
+    async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], shuffle: bool = False):
         await interaction.response.defer(ephemeral=False)
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
@@ -330,6 +331,8 @@ class Music(commands.Cog):
         
         first = True
         list = data['playlists'][playlist.value]['name']
+        if shuffle:
+            random.shuffle(list)
         
         for track in data['playlists'][playlist.value]['tracks']:
             try:
