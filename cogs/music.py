@@ -349,7 +349,7 @@ class Music(commands.Cog):
                 
         await self.play_all_songs(interaction.guild)
 
-    @app_commands.command(name='playlistshow', description='Show a playlist.')
+    # @app_commands.command(name='playlistshow', description='Show a playlist.')
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
