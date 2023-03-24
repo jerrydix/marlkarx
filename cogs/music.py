@@ -350,7 +350,17 @@ class Music(commands.Cog):
                 
         await self.play_all_songs(interaction.guild)
 
-    # @app_commands.command(name='playlistshow', description='Show a playlist.')
+
+    @app_commands.command(name='playlistshow', description='Show a playlist.')
+    @app_commands.describe(playlist='playlist')
+    @app_commands.choices(playlist=playlists)
+    async def playlistshow(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
+        list = data['playlists'][playlist.value]['name']
+        tracks = data['playlists'][playlist.value]['tracks']
+        result = f'Tracks in the **{list}** playlist:\n'
+        for track in tracks:
+            result += f'**{track}**\n'
+        await interaction.response.send_message(result)
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
