@@ -76,8 +76,11 @@ class Music(commands.Cog):
         music_queue.append(song)
         await interaction.followup.send(f'Queued song: **{song.title}**')
 
+        print('test1')
         if voice is None or not voice.is_connected():
+            print('test2')
             await channel.connect()
+            print('test3')
 
         await self.play_all_songs(interaction.guild)
         
