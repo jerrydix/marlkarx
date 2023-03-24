@@ -332,7 +332,7 @@ class Music(commands.Cog):
         first = True
         list = data['playlists'][playlist.value]['name']
         if shuffle:
-            random.shuffle(list)
+            list = random.sample(list, len(list))
         
         for track in data['playlists'][playlist.value]['tracks']:
             try:
@@ -349,6 +349,7 @@ class Music(commands.Cog):
                 
         await self.play_all_songs(interaction.guild)
 
+    @app_commands.command(name='playlistshow', description='Show a playlist.')
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
