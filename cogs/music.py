@@ -296,6 +296,7 @@ class Music(commands.Cog):
 
         try:
             song = Song(prompt, author=interaction.user)
+            print(song)
         except SongRequestError as e:
             await interaction.followup.send(e.args[0])
             return
@@ -306,7 +307,7 @@ class Music(commands.Cog):
         #            'uploader': song.uploader,
         #            ''}
         #json.dumps(list_obj)
-        print(song)
+    
         data['playlists'][playlist.value]['tracks'].append(song.title)
         json.dump(data, c)
         c.close()
