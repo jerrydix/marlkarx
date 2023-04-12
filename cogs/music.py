@@ -301,6 +301,12 @@ class Music(commands.Cog):
             return
 
         c = open('config.json', 'w')
+        #list_obj = {'url': song.url, 
+        #            'title': song.title, 
+        #            'uploader': song.uploader,
+        #            ''}
+        #json.dumps(list_obj)
+        print(song)
         data['playlists'][playlist.value]['tracks'].append(song.title)
         json.dump(data, c)
         c.close()
