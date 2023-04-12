@@ -88,7 +88,7 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='ping', description='Get the squad together')
-    @app_commands.checks.cooldown(1, 60,  key=lambda i: (i.user.id))
+    @app_commands.checks.cooldown(1, 60, key=lambda i: (i.user.id))
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
