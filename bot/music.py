@@ -34,6 +34,7 @@ class Queue(list):
         return self._current_song
 
     def get_embed(self, song_id: int):
+
         if song_id <= 0:
             song = self.current_song
         else:
@@ -47,11 +48,11 @@ class Queue(list):
         embed.add_field(name='Song', value=song.title, inline=True)
         embed.add_field(name='Uploader', value=song.uploader, inline=True)
         embed.add_field(name='Duration', value=song.duration_formatted, inline=True)
-        embed.add_field(name='Description', value=song.description, inline=True)
+        #embed.add_field(name='Description', value=song.description, inline=True)
         embed.add_field(name='Upload Date', value=song.upload_date_formatted, inline=True)
         embed.add_field(name='Views', value=song.views, inline=True)
         embed.add_field(name='Likes', value=song.likes, inline=True)
-        embed.add_field(name='Dislikes', value=song.dislikes, inline=True)
+        #embed.add_field(name='Dislikes', value=song.dislikes, inline=True)
         embed.add_field(name='Requested By', value=song.requested_by.display_name, inline=True)
 
         return embed
@@ -75,6 +76,23 @@ class Song(dict):
 
     def __init__(self, url: str, author: discord.Member):
         super().__init__()
+        self._url = None
+        self._title = None
+        self._uploader = None
+        self._duration_raw = None
+        self._description = None
+        self._upload_date_raw = None
+        self._views = None
+        self._likes = None
+        self._dislikes = None
+        self._thumbnail = None
+        self._requested_by = None
+
+
+        if url == '':
+            self['requested_by'] = author
+            return
+
         self.download_info(url, author)
 
         if self.duration_raw > config.MUSIC_MAX_DURATION_MINS*60:
@@ -86,19 +104,43 @@ class Song(dict):
 
     @property
     def url(self):
-        return self.get('url', None)
+        if self._url is None:
+            return self.get('url', None)
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        self._url = value
 
     @property
     def title(self):
-        return self.get('title', 'Unable To Fetch')
+        if self._title is None:
+            return self.get('title', 'Unable To Fetch')
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        self._title = value
 
     @property
     def uploader(self):
-        return self.get('uploader', 'Unable To Fetch')
+        if self._uploader is None:
+            return self.get('uploader', 'Unable To Fetch')
+        return self._uploader
+
+    @uploader.setter
+    def uploader(self, value):
+        self._uploader = value
 
     @property
     def duration_raw(self):
-        return self.get('duration', 0)
+        if self._duration_raw is None:
+            return self.get('duration', 0)
+        return self._duration_raw
+
+    @duration_raw.setter
+    def duration_raw(self, value):
+        self._duration_raw = value
 
     @property
     def duration_formatted(self):
@@ -107,11 +149,23 @@ class Song(dict):
 
     @property
     def description(self):
-        return self.get('description', 'Unable To Fetch')
+        if self._description is None:
+            return self.get('description', 'Unable To Fetch')
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        self._description = value
 
     @property
     def upload_date_raw(self):
-        return self.get('upload_date', '01011970')
+        if self._upload_date_raw is None:
+            return self.get('upload_date', '01011970')
+        return self._upload_date_raw
+
+    @upload_date_raw.setter
+    def upload_date_raw(self, value):
+        self._upload_date_raw = value
 
     @property
     def upload_date_formatted(self):
@@ -120,23 +174,53 @@ class Song(dict):
 
     @property
     def views(self):
-        return self.get('view_count', 0)
+        if self._views is None:
+            return self.get('view_count', 0)
+        return self._views
+
+    @views.setter
+    def views(self, value):
+        self._views = value
 
     @property
     def likes(self):
-        return self.get('like_count', 0)
+        if self._likes is None:
+            return self.get('like_count', 0)
+        return self._likes
+
+    @likes.setter
+    def likes(self, value):
+        self._likes = value
 
     @property
     def dislikes(self):
-        return self.get('dislike_count', 0)
+        if self._dislikes is None:
+            return self.get('dislike_count', 0)
+        return self._dislikes
+
+    @dislikes.setter
+    def dislikes(self, value):
+        self._dislikes = value
 
     @property
     def thumbnail(self):
-        return self.get('thumbnail', 'http://i.imgur.com/dDTCO6e.png')
+        if self._thumbnail is None:
+            return self.get('thumbnail', 'http://i.imgur.com/dDTCO6e.png')
+        return self._thumbnail
+
+    @thumbnail.setter
+    def thumbnail(self, value):
+        self._thumbnail = value
 
     @property
     def requested_by(self):
-        return self.get('requested_by', None)
+        if self._requested_by is None:
+            return self.get('requested_by', None)
+        return self._requested_by
+
+    @requested_by.setter
+    def requested_by(self, value):
+        self._requested_by = value
 
     def download_info(self, url: str, author: discord.Member):
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:

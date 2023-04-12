@@ -296,19 +296,16 @@ class Music(commands.Cog):
 
         try:
             song = Song(prompt, author=interaction.user)
-            print(song)
         except SongRequestError as e:
             await interaction.followup.send(e.args[0])
             return
 
         c = open('config.json', 'w')
-        #list_obj = {'url': song.url, 
-        #            'title': song.title, 
-        #            'uploader': song.uploader,
-        #            ''}
-        #json.dumps(list_obj)
+
+        song_dict = dict(url = song.url, title = song.title, uploader = song.uploader, duration_raw = song.duration_raw, duration_formatted = song.duration_formatted, description = song.description, upload_date_raw = song.upload_date_raw, upload_date_formatted = song.upload_date_formatted, views = song.views, likes = song.likes, dislikes = song.dislikes, thumbnail = song.thumbnail, requested_by = "")
+        json.dumps(song_dict)
     
-        data['playlists'][playlist.value]['tracks'].append(song.title)
+        data['playlists'][playlist.value]['tracks'].append(song_dict)
         json.dump(data, c)
         c.close()
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
@@ -344,7 +341,17 @@ class Music(commands.Cog):
         
         for track in tracks:
             try:
-                song = Song(f'ytsearch1:{track}', author=interaction.user)
+                song = Song('', author=interaction.user)
+                song.url = track['url']
+                song.title = track['title']
+                song.uploader = track['uploader']
+                song.duration_raw = track['duration_raw']
+                song.description = track['description']
+                song.upload_date_raw = track['upload_date_raw']
+                song.views = track['views']
+                song.likes = track['likes']
+                song.dislikes = track['dislikes']
+                song.thumbnail = track['thumbnail']
             except SongRequestError as e:
                 await interaction.followup.send(e.args[0])
                 return
