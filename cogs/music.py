@@ -370,7 +370,9 @@ class Music(commands.Cog):
     @app_commands.choices(playlist=playlists)
     async def playlistshow(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
         list = data['playlists'][playlist.value]['name']
-        tracks = data['playlists'][playlist.value]['tracks']
+        tracks = []
+        for i in data['playlists'][playlist.value]['tracks']:
+            tracks.append(i['title'])
         result = f'Tracks in the **{list}** playlist:\n'
         for track in tracks:
             result += f'**{track}**\n'
