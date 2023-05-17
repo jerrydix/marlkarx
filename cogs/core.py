@@ -8,6 +8,12 @@ from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
 from pagination import HelpView
+import os
+from typing import Union
+from PIL import Image
+from emojify import emojify_image
+import requests
+
 import webcrawler
 
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
@@ -255,6 +261,26 @@ class Core(commands.Cog):
             await interaction.response.send_message('You can\'t delete a negative amount of messages.')
         else:
             await interaction.response.send_message('You can\'t delete more than 25 messages at once!')
+
+
+    @app_commands.command(name='emojify', description='Emojify an image')
+    @app_commands.describe(url='url', size='size')
+    async def emojify(self, interaction: discord.Interaction, url: Union[discord.Member, str], size: int = 14):
+
+        await interaction.response.defer(ephemeral=False)
+        if not isinstance(url, str):
+            url = url.display_avatar.url
+
+        def get_emojified_image():
+            r = requests.get(url, stream=True)
+            image = Image.open(r.raw).convert("RGB")
+            res = emojify_image(image, size)
+
+            if size > 14:
+                res = f"```{res}```"
+            return res
+
+        await interaction.followup.send(get_emojified_image)
 
 
     # class Dropdown(discord.ui.Select):
