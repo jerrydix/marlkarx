@@ -265,22 +265,24 @@ class Core(commands.Cog):
 
     @app_commands.command(name='emojify', description='Emojify an image')
     @app_commands.describe(url='url', size='size')
-    async def emojify(self, interaction: discord.Interaction, url: Union[discord.Member, str], size: int = 14):
+    async def emojify(self, interaction: discord.Interaction, url: str, size: int = 14):
 
         await interaction.response.defer(ephemeral=False)
         if not isinstance(url, str):
             url = url.display_avatar.url
+        print(url)
 
         def get_emojified_image():
             r = requests.get(url, stream=True)
             image = Image.open(r.raw).convert("RGB")
+            print('test0')
             res = emojify_image(image, size)
-
+            print('test1')
             if size > 14:
                 res = f"```{res}```"
             return res
 
-        await interaction.followup.send(get_emojified_image)
+        await interaction.followup.send(get_emojified_image())
 
 
     # class Dropdown(discord.ui.Select):
