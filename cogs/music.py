@@ -259,7 +259,7 @@ class Music(commands.Cog):
     @app_commands.command(name='createplaylist', description='Create a new playlist')
     @app_commands.describe(name='name')
     async def createplaylist(self, interaction: discord.Interaction, name: str):
-        if 'playlists' in data and len(data['playlists']) < 20:
+        if 'playlists' in data and len(data['playlists']) < 10:
             for list in data['playlists']:
                 if list['name'] == name:
                     await interaction.response.send_message('This playlist already exits. Can\'t add playlist with same name twice.')
@@ -273,7 +273,7 @@ class Music(commands.Cog):
             await interaction.response.send_message(f'Added playlist **{name}**')
             
         elif 'playlists' in data:
-            await interaction.response.send_message('Cannot add more than 20 playlists.')
+            await interaction.response.send_message('Cannot add more than 10 playlists.')
             return
         else:
             print(TODO)
