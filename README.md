@@ -14,7 +14,7 @@ For setting up the bot and getting the ping, imagine, complete and music command
 "games": [],
 "playlists": []
 ```
-Furthermore, you have to create a role named "DJ" on your server and assign to people that are supposed to be able to use the fskip, fremove, and stop commands. 
+Furthermore, you have to create a role named "DJ" on your server and assign it to people who are supposed to be able to use the fskip, fremove, and stop commands. 
 
 Currently, the docker file is out of date, so you will have to install the needed dependencies via pip yourself.
 
