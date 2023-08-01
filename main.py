@@ -48,9 +48,9 @@ bot = Client()
         
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
-    if isinstance(error, app_commands.MissingRole):
+    if isinstance(error, app_commands.MissingAnyRole):
         await interaction.response.send_message(
-            f"Role **{get(bot.get_guild(170953505610137600).roles, id=781223345319706646)}** is required to run this command. Execution failed.")
+            f"Roles **{get(bot.get_guild(170953505610137600).roles, id=781223345319706646)}** or **DJ** are required to run this command. Execution failed.")
     elif isinstance(error, app_commands.CommandOnCooldown):
         await interaction.response.send_message(
             f"Not so fast, comrade. Wait for another {int(error.retry_after)} seconds before executing the command again.",
