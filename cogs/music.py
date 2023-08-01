@@ -133,7 +133,7 @@ class Music(commands.Cog):
                            f'required.')
     
     @app_commands.command(name='fskip', description='Force skip a song')
-    @app_commands.checks.has_role(781223345319706646)
+    @app_commands.checks.has_any_role(781223345319706646, "DJ")
     async def fskipsong(self, interaction: discord.Interaction):
         '''Admin command that forces skipping of the currently playing song.'''
 
@@ -148,7 +148,7 @@ class Music(commands.Cog):
             await interaction.response.send_message('Skipped song.')
     
     @app_commands.command(name='fremove', description='Force remove a song')
-    @app_commands.checks.has_role(781223345319706646)
+    @app_commands.checks.has_any_role(781223345319706646, "DJ")
     async def fremovesong(self, interaction: discord.Interaction, id: int = None):
         '''Admin command to forcibly remove a song from the queue by it's position.'''
 
@@ -432,7 +432,7 @@ class Music(commands.Cog):
         await self.play_all_songs(ctx.guild)
 
     @commands.command()
-    @commands.has_role(781223345319706646)
+    @commands.has_any_role(781223345319706646, "DJ")
     async def stop(self, ctx: commands.Context):
         '''Admin command that stops playback of music and clears out the music queue.'''
 
@@ -479,7 +479,7 @@ class Music(commands.Cog):
                            f'required.')
 
     @commands.command()
-    @commands.has_role(781223345319706646)
+    @commands.has_any_role(781223345319706646, "DJ")
     async def fskip(self, ctx: commands.Context):
         '''Admin command that forces skipping of the currently playing song.'''
 
@@ -537,7 +537,7 @@ class Music(commands.Cog):
                 await ctx.send('You cannot remove a song requested by someone else.')
 
     @commands.command()
-    @commands.has_role(781223345319706646)
+    @commands.has_any_role(781223345319706646, "DJ")
     async def fremove(self, ctx: commands.Context, song_id: int = None):
         '''Admin command to forcibly remove a song from the queue by it's position.'''
 
