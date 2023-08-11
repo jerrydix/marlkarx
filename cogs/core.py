@@ -308,7 +308,7 @@ class Core(commands.Cog):
     @app_commands.describe(user='user', datetime='when to send the reminder', message='message')
     async def remind(self, interaction: discord.Interaction, user: discord.User, datetime: str, message: str):
         await interaction.response.defer(ephemeral=False)
-        datetime = dp.parse(datetime)
+        datetime = await dp.parse(datetime)
         reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetime.strftime('%d/%m/%Y %H:%M'), 'message': message}
         c = open('config.json', 'w')
         data['reminders'].append(reminder_dict)
