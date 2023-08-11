@@ -3,6 +3,7 @@ import json
 import random
 import openai
 import discord
+import dateparser as dp
 from discord import app_commands
 from discord.ext import commands
 from discord.ext import tasks
@@ -31,6 +32,7 @@ class Core(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.send_daily_quote.start()
+        self.send_reminder.start()
         i = 0
         while i < len(data['games']):
             game_choices.append(discord.app_commands.Choice(name=data['games'][i]['name'], value=i))
@@ -52,6 +54,22 @@ class Core(commands.Cog):
         if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
             channel = self.bot.get_channel(779824836498948118)
             await channel.send('**Tägliches Zitat:**\n*\"' + self.pick_quote() + '\"*')
+            
+    @tasks.loop(minutes=1)
+    async def send_reminder(self):
+        global data
+        for reminder in data['reminders']:
+            if (datetime.datetime.now() >= datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
+                receiver = self.bot.get_user(reminder['receiver'])
+                sender = self.bot.get_user(reminder['sender'])
+                await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
+                data['reminders'].remove(reminder)
+                with open('config.json', 'w') as outfile:
+                    json.dump(data, outfile)
+                settings = open('config.json')
+                data = json.load(settings)
+                settings.close()
+                break
         
     @app_commands.command(name='quote', description='Marl Karx quotes Karl Marx')
     async def quote(self, interaction: discord.Interaction):
@@ -283,6 +301,18 @@ class Core(commands.Cog):
             return res
 
         await interaction.followup.send(get_emojified_image())
+        
+    @app_commands.command(name='remind', description='Let Marl Karx remind someone of something')
+    @app_commands.describe(user='user', datetimenl='date / time', message='message')
+    async def remind(self, interaction: discord.Interaction, user: discord.User, datetimenl: str, message: str):
+        await interaction.response.defer(ephemeral=False)
+        datetime = dp.parse(datetimenl)
+        reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetime.strftime('%d/%m/%Y %H:%M'), 'message': message}
+        c = open('config.json', 'w')
+        data['reminders'].append(reminder_dict)
+        json.dump(data, c)
+        c.close()
+        await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetime.strftime('%d/%m/%Y %H:%M')}**")
 
 
     # class Dropdown(discord.ui.Select):
