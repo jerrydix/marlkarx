@@ -1,4 +1,5 @@
 import datetime
+from datetime import datetime
 import json
 import random
 import openai
@@ -51,7 +52,7 @@ class Core(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def send_daily_quote(self):
-        if (datetime.datetime.now().time().hour == 19 and datetime.datetime.now().time().minute == 0):
+        if (datetime.now().time().hour == 19 and datetime.now().time().minute == 0):
             channel = self.bot.get_channel(779824836498948118)
             await channel.send('**Tägliches Zitat:**\n*\"' + self.pick_quote() + '\"*')
             
@@ -59,7 +60,7 @@ class Core(commands.Cog):
     async def send_reminder(self):
         global data
         for reminder in data['reminders']:
-            if (datetime.datetime.now() >= datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
+            if (datetime.now() >= datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
                 receiver = self.bot.get_user(reminder['receiver'])
                 sender = self.bot.get_user(reminder['sender'])
                 await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
