@@ -418,7 +418,7 @@ class Music(commands.Cog):
             url = f'ytsearch1:{url} {" ".join(args)}'
 
         try:
-            song = Song(url, author=ctx.author)
+            song = Song(url, author=ctx.author.name)
         except SongRequestError as e:
             await ctx.send(e.args[0])
             return

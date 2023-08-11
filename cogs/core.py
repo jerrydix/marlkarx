@@ -64,7 +64,7 @@ class Core(commands.Cog):
                 print(reminder['receiver'])
                 receiver = await self.bot.fetch_user(reminder['receiver'])
                 sender = await self.bot.fetch_user(reminder['sender'])
-                await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
+                await receiver.send(f"**Reminder by {sender.name}:**\n{reminder['message']}")
                 data['reminders'].remove(reminder)
                 with open('config.json', 'w') as outfile:
                     json.dump(data, outfile)
