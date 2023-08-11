@@ -308,7 +308,10 @@ class Core(commands.Cog):
     @app_commands.describe(user='user', datetime='when to send the reminder', message='message')
     async def remind(self, interaction: discord.Interaction, user: discord.User, datetime: str, message: str):
         await interaction.response.defer(ephemeral=False)
-        datetimeactual = await dp.parse(datetime)
+        datetimeactual = dp.parse(datetime)
+        if datetimeactual is None:
+            await interaction.followup.send(f"Could not parse datetime, aborted.")
+            return
         reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetimeactual.strftime('%d/%m/%Y %H:%M'), 'message': message}
         c = open('config.json', 'w')
         data['reminders'].append(reminder_dict)
