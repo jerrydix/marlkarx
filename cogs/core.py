@@ -64,7 +64,7 @@ class Core(commands.Cog):
                 print(reminder['receiver'])
                 receiver = await self.bot.fetch_user(reminder['receiver'])
                 sender = await self.bot.fetch_user(reminder['sender'])
-                await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
+                await receiver.send(f"**Reminder by {sender.name}:**\n{reminder['message']}")
                 data['reminders'].remove(reminder)
                 with open('config.json', 'w') as outfile:
                     json.dump(data, outfile)
@@ -305,10 +305,10 @@ class Core(commands.Cog):
         await interaction.followup.send(get_emojified_image())
         
     @app_commands.command(name='remind', description='Let Marl Karx remind someone of something')
-    @app_commands.describe(user='user', datetimenl='date / time', message='message')
-    async def remind(self, interaction: discord.Interaction, user: discord.User, datetimenl: str, message: str):
+    @app_commands.describe(user='user', datetime='when to send the reminder', message='message')
+    async def remind(self, interaction: discord.Interaction, user: discord.User, datetime: str, message: str):
         await interaction.response.defer(ephemeral=False)
-        datetime = dp.parse(datetimenl)
+        datetime = dp.parse(datetime)
         reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetime.strftime('%d/%m/%Y %H:%M'), 'message': message}
         c = open('config.json', 'w')
         data['reminders'].append(reminder_dict)
