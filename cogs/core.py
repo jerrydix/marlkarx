@@ -308,13 +308,13 @@ class Core(commands.Cog):
     @app_commands.describe(user='user', datetime='when to send the reminder', message='message')
     async def remind(self, interaction: discord.Interaction, user: discord.User, datetime: str, message: str):
         await interaction.response.defer(ephemeral=False)
-        datetime = await dp.parse(datetime)
-        reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetime.strftime('%d/%m/%Y %H:%M'), 'message': message}
+        datetimeactual = await dp.parse(datetime)
+        reminder_dict = {'sender': interaction.user.id, 'receiver': user.id, 'datetime': datetimeactual.strftime('%d/%m/%Y %H:%M'), 'message': message}
         c = open('config.json', 'w')
         data['reminders'].append(reminder_dict)
         json.dump(data, c)
         c.close()
-        await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetime.strftime('%d/%m/%Y %H:%M')}**")
+        await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
 
 
     # class Dropdown(discord.ui.Select):
