@@ -62,8 +62,8 @@ class Core(commands.Cog):
         for reminder in data['reminders']:
             if (datetime.now() >= datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
                 print(reminder['receiver'])
-                receiver = self.bot.get_user(reminder['receiver'])
-                sender = self.bot.get_user(reminder['sender'])
+                receiver = await self.bot.fetch_user(reminder['receiver'])
+                sender = await self.bot.fetch_user(reminder['sender'])
                 await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
                 data['reminders'].remove(reminder)
                 with open('config.json', 'w') as outfile:
