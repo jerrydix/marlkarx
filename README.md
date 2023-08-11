@@ -12,7 +12,8 @@ For setting up the bot and getting the ping, imagine, complete and music command
 "token": "YOUR_TOKEN",
 "openai_key": "YOUR_OPENAI_KEY",
 "games": [],
-"playlists": []
+"playlists": [],
+"reminders"
 ```
 Furthermore, you have to create a role named "DJ" on your server and assign it to people who are supposed to be able to use the fskip, fremove, and stop commands. 
 
