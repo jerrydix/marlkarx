@@ -59,7 +59,7 @@ class Core(commands.Cog):
     async def send_reminder(self):
         global data
         for reminder in data['reminders']:
-            if (datetime.datetime.now() >= datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
+            if (datetime.datetime.now() >= datetime.datetime.strptime(reminder['datetime'], '%d/%m/%Y %H:%M')):
                 receiver = self.bot.get_user(reminder['receiver'])
                 sender = self.bot.get_user(reminder['sender'])
                 await receiver.send(f"**Reminder by {sender}:**\n{reminder['message']}")
