@@ -50,7 +50,7 @@ bot = Client()
 async def role_error_catch(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingAnyRole):
         await interaction.response.send_message(
-            f"Roles **{get(bot.get_guild(170953505610137600).roles, id=781223345319706646)}** or **DJ** are required to run this command. Execution failed.")
+            f"The **DJ** role is required to run this command. Execution failed.")
     elif isinstance(error, app_commands.CommandOnCooldown):
         await interaction.response.send_message(
             f"Not so fast, comrade. Wait for another {int(error.retry_after)} seconds before executing the command again.",
@@ -65,6 +65,8 @@ async def on_member_join(member: discord.Member):
     if member.guild.id == 170953505610137600:
         await bot.get_channel(751907139425009694).send(f"{member.display_name} joined the server.")
     elif member.guild.id == 170953505610137600:
+        role = get(member.server.roles, id=191870663718338560)
+        await bot.add_roles(member, role)
         await bot.get_channel(976504141587312691).send(f"{member.display_name} joined the server.")
         
         
@@ -73,6 +75,10 @@ async def on_member_remove(member: discord.Member):
     if member.guild.id == 170953505610137600:
         await bot.get_channel(751907139425009694).send(f"{member.display_name} left the server.")
     elif member.guild.id == 170953505610137600:
+        c = open('config.json', 'w')
+        data['users_left'].append({'id': member.id})
+        json.dump(data, c)
+        c.close()
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
 @bot.tree.command(name='reload')
