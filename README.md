@@ -1,5 +1,5 @@
 # Marl Karx
-A simple Discord.py bot that likes communism
+A simple Discord.py bot that has neat unique features and music functionality 
 
 The Bot is currently only optimized to run on my friend's server, but you can use most of the features on your own server, too.
 
