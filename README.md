@@ -6,7 +6,7 @@ The Bot is currently only optimized to run on my friend's server, but you can us
 This bot supports slash commands and can be used as a music bot.
 
 ## Setup
-For setting up the bot and getting the ping, imagine, complete and music commands up to work you will have to create a config.json with the following form:
+For setting up the bot and getting the ping, imagine, complete, reminder and music commands up to work you will have to create a config.json with the following form:
 
 ``` 
 "token": "YOUR_TOKEN",
