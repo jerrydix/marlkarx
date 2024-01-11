@@ -17,6 +17,5 @@ For setting up the bot and getting the ping, imagine, complete, reminder and mus
 ```
 Furthermore, you have to create a role named "DJ" on your server and assign it to people who are supposed to be able to use the fskip, fremove, and stop commands. 
 
-Currently, the docker file is out of date, so you will have to install the needed dependencies via pip yourself.
-
-To launch the bot after setting up the config.json simply execute main.py
+To launch the bot after setting up the config.json simply execute main.py.
+Alternatively, you can create a docker image using the Dockerfile.
