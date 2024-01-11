@@ -8,3 +8,4 @@ Requests
 tabulate
 validators
 yt_dlp
+PyNaCl

@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bullseye
+FROM python:3.11-slim-bullseye
 COPY . /app
 WORKDIR /app
 RUN apt-get update && apt-get install libffi-dev libnacl-dev ffmpeg -y
