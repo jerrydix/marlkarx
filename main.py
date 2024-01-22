@@ -84,9 +84,12 @@ async def on_member_remove(member: discord.Member):
 @bot.event
 async def on_voice_state_update(member, before, after):
     channel = before.channel or after.channel
-    if channel.id != data["jail"] and member.id in data["jailed"]:
-        channel = bot.get_channel(data["jail"])
-        await member.move_to(channel)
+    if channel.id != data["jail"]:
+        for inmate in data["jailed"]:
+            if inmate["user"] == member.id:
+                channel = bot.get_channel(data["jail"])
+                await member.move_to(channel)
+                return
 
 @bot.tree.command(name='reload')
 async def reload(interaction: discord.Interaction, extension: str):
