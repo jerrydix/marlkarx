@@ -83,7 +83,11 @@ async def on_member_remove(member: discord.Member):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
+    global data
+    global settings
     channel = after.channel
+    settings = open('config.json')
+    data = json.load(settings)
     if channel.id != data["jail"]:
         for inmate in data["jailed"]:
             if inmate["user"] == member.id:

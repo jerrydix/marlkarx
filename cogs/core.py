@@ -320,6 +320,8 @@ class Core(commands.Cog):
         data['reminders'].append(reminder_dict)
         json.dump(data, c)
         c.close()
+        c = open('config.json')
+        data = json.load(c)
         await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
 
     @app_commands.command(name='jail', description='Send someone to jail')
@@ -331,6 +333,8 @@ class Core(commands.Cog):
         data['jailed'].append(jail_dict)
         json.dump(data, c)
         c.close()
+        c = open('config.json')
+        data = json.load(c)
         channel = self.bot.get_channel(data["jail"])
         await user.move_to(channel)
         await interaction.followup.send(f"Sent {user.display_name} to jail.")
@@ -343,6 +347,8 @@ class Core(commands.Cog):
         data['jailed'].remove({"server": interaction.guild.id, "user": user.id})
         json.dump(data, c)
         c.close()
+        c = open('config.json')
+        data = json.load(c)
         await interaction.followup.send(f"Release {user.display_name} from jail.")
 
 
