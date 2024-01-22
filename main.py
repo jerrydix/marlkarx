@@ -83,7 +83,7 @@ async def on_member_remove(member: discord.Member):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    channel = before.channel or after.channel
+    channel = after.channel
     if channel.id != data["jail"]:
         for inmate in data["jailed"]:
             if inmate["user"] == member.id:
