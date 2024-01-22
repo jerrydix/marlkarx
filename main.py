@@ -81,6 +81,12 @@ async def on_member_remove(member: discord.Member):
         c.close()
         await bot.get_channel(976504141587312691).send(f"{member.display_name} left the server.")
 
+@bot.event
+async def on_voice_state_update(member, before, after):
+    channel = before.channel or after.channel
+    if channel.id != data["jail"] and member.id in data["jailed"]:
+        await member.move_to(discord.utils.find(lambda x: x.name == data["jail"], member.guild.channels))
+
 @bot.tree.command(name='reload')
 async def reload(interaction: discord.Interaction, extension: str):
     await bot.reload_extension(f"cogs.{extension}")

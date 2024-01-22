@@ -322,8 +322,30 @@ class Core(commands.Cog):
         c.close()
         await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
 
+    @app_commands.command(name='jail', description='Send someone to jail')
+    @app_commands.describe(user='user')
+    async def jail(self, interaction: discord.Interaction, user: discord.Member):
+        await interaction.response.defer(ephemeral=False)
+        c = open('config.json', 'w')
+        jail_dict = {"server": interaction.guild.id, "user": user.id}
+        data['jailed'].append(jail_dict)
+        json.dump(data, c)
+        c.close()
+        await user.move_to(discord.utils.find(lambda x: x.name == data["jailed"], interaction.guild.channels))
+        await interaction.followup.send(f"Sent {user.display_name} to jail.")
 
-    # class Dropdown(discord.ui.Select):
+    @app_commands.command(name='release', description='Release someone from jail')
+    @app_commands.describe(user='user')
+    async def release(self, interaction: discord.Interaction, user: discord.Member):
+        await interaction.response.defer(ephemeral=False)
+        c = open('config.json', 'w')
+        data['jailed'].remove(user.id)
+        json.dump(data, c)
+        c.close()
+        await interaction.followup.send(f"Release {user.display_name} from jail.")
+
+
+        # class Dropdown(discord.ui.Select):
     # def __init__(self, message, images, user):
     #    super().__init__()
     #    self.message = message
