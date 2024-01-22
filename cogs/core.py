@@ -65,9 +65,9 @@ class Core(commands.Cog):
                 receiver = await self.bot.fetch_user(reminder['receiver'])
                 sender = await self.bot.fetch_user(reminder['sender'])
                 try:
-                    await receiver.send(f"**Reminder by {sender.name}:**\n{reminder['message']}")
+                    await receiver.send(f"**Reminder by {sender.display_name}:**\n{reminder['message']}")
                 except discord.HTTPException:
-                    print(f"Could not send reminder to {receiver.name}")
+                    print(f"Could not send reminder to {receiver.display_name}")
                 data['reminders'].remove(reminder)
                 with open('config.json', 'w') as outfile:
                     json.dump(data, outfile)
@@ -320,7 +320,7 @@ class Core(commands.Cog):
         data['reminders'].append(reminder_dict)
         json.dump(data, c)
         c.close()
-        await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
+        await interaction.followup.send(f"**{user.display_name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
 
     @app_commands.command(name='jail', description='Send someone to jail')
     @app_commands.describe(user='user')
