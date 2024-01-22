@@ -83,15 +83,13 @@ async def on_member_remove(member: discord.Member):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    global data
-    global settings
     channel = after.channel
-    settings = open('config.json')
-    data = json.load(settings)
-    if channel.id != data["jail"]:
-        for inmate in data["jailed"]:
+    sets = open('config.json')
+    current_data = json.load(sets)
+    if channel.id != current_data["jail"]:
+        for inmate in current_data["jailed"]:
             if inmate["user"] == member.id:
-                channel = bot.get_channel(data["jail"])
+                channel = bot.get_channel(current_data["jail"])
                 await member.move_to(channel)
                 return
 

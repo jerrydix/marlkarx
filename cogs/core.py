@@ -311,7 +311,6 @@ class Core(commands.Cog):
     @app_commands.describe(user='user', datetime='when to send the reminder', message='message')
     async def remind(self, interaction: discord.Interaction, user: discord.User, datetime: str, message: str):
         await interaction.response.defer(ephemeral=False)
-        global data
         datetimeactual = dp.parse(datetime)
         if datetimeactual is None:
             await interaction.followup.send(f"Could not parse datetime, aborted.")
@@ -321,22 +320,17 @@ class Core(commands.Cog):
         data['reminders'].append(reminder_dict)
         json.dump(data, c)
         c.close()
-        c = open('config.json')
-        data = json.load(c)
         await interaction.followup.send(f"**{user.name}** will be reminded of *\"{message}\"* at **{datetimeactual.strftime('%d/%m/%Y %H:%M')}**")
 
     @app_commands.command(name='jail', description='Send someone to jail')
     @app_commands.describe(user='user')
     async def jail(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
-        global data
         c = open('config.json', 'w')
         jail_dict = {"server": interaction.guild.id, "user": user.id}
         data['jailed'].append(jail_dict)
         json.dump(data, c)
         c.close()
-        c = open('config.json')
-        data = json.load(c)
         channel = self.bot.get_channel(data["jail"])
         await user.move_to(channel)
         await interaction.followup.send(f"Sent {user.display_name} to jail.")
@@ -350,8 +344,6 @@ class Core(commands.Cog):
         data['jailed'].remove({"server": interaction.guild.id, "user": user.id})
         json.dump(data, c)
         c.close()
-        c = open('config.json')
-        data = json.load(c)
         await interaction.followup.send(f"Release {user.display_name} from jail.")
 
 
