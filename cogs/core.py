@@ -352,7 +352,7 @@ class Core(commands.Cog):
             return
         json.dump(data, c)
         c.close()
-        await interaction.followup.send(f"Release **{user.display_name}** from jail.")
+        await interaction.followup.send(f"Released **{user.display_name}** from jail.")
 
 
         # class Dropdown(discord.ui.Select):
