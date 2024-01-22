@@ -324,27 +324,35 @@ class Core(commands.Cog):
 
     @app_commands.command(name='jail', description='Send someone to jail')
     @app_commands.describe(user='user')
+    @commands.has_role("Jailor")
     async def jail(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
-        c = open('config.json', 'w')
         jail_dict = {"server": interaction.guild.id, "user": user.id}
+        if jail_dict in data["jailed"]:
+            await interaction.followup.send(f"**{user.display_name}** is already in jail on this server.")
+            return
+        c = open('config.json', 'w')
         data['jailed'].append(jail_dict)
         json.dump(data, c)
         c.close()
         channel = self.bot.get_channel(data["jail"])
         await user.move_to(channel)
-        await interaction.followup.send(f"Sent {user.display_name} to jail.")
+        await interaction.followup.send(f"Sent **{user.display_name}** to jail.")
 
     @app_commands.command(name='release', description='Release someone from jail')
     @app_commands.describe(user='user')
+    @commands.has_role("Jailor")
     async def release(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
-        global data
         c = open('config.json', 'w')
-        data['jailed'].remove({"server": interaction.guild.id, "user": user.id})
+        try:
+            data['jailed'].remove({"server": interaction.guild.id, "user": user.id})
+        except ValueError:
+            await interaction.followup.send(f"**{user.display_name}** is already out of jail on this server.")
+            return
         json.dump(data, c)
         c.close()
-        await interaction.followup.send(f"Release {user.display_name} from jail.")
+        await interaction.followup.send(f"Release **{user.display_name}** from jail.")
 
 
         # class Dropdown(discord.ui.Select):

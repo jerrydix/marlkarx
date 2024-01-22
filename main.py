@@ -48,9 +48,12 @@ bot = Client()
         
 @bot.tree.error
 async def role_error_catch(interaction: discord.Interaction, error):
-    if isinstance(error, app_commands.MissingAnyRole):
+    if isinstance(error, app_commands.MissingRole) and error.missing_role == "DJ":
         await interaction.response.send_message(
             f"The **DJ** role is required to run this command. Execution failed.")
+    elif isinstance(error, app_commands.MissingRole) and error.missing_role == "Jailor":
+        await interaction.response.send_message(
+            f"The **Jailor** role is required to run this command. Execution failed.")
     elif isinstance(error, app_commands.CommandOnCooldown):
         await interaction.response.send_message(
             f"Not so fast, comrade. Wait for another {int(error.retry_after)} seconds before executing the command again.",
@@ -86,7 +89,7 @@ async def on_voice_state_update(member, before, after):
     channel = after.channel
     sets = open('config.json')
     current_data = json.load(sets)
-    if channel.id != current_data["jail"]:
+    if channel is not None and channel.id != current_data["jail"]:
         for inmate in current_data["jailed"]:
             if inmate["user"] == member.id:
                 channel = bot.get_channel(current_data["jail"])
