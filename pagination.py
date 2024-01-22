@@ -4,7 +4,7 @@ from tabulate import tabulate
 class QueueView(discord.ui.View):
     
     current_page: int = 1
-    sep: int = 10
+    sep: int = 8
     
     async def send(self, interaction: discord.Interaction):
         self.message = await interaction.response.send_message(f'Currently playing: **{self.data.current_song.title}**, Requested by: {self.data.current_song.requested_by}')
