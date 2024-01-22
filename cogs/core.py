@@ -331,7 +331,8 @@ class Core(commands.Cog):
         data['jailed'].append(jail_dict)
         json.dump(data, c)
         c.close()
-        await user.move_to(discord.utils.find(lambda x: x.name == data["jailed"], interaction.guild.channels))
+        channel = self.bot.get_channel(data["jail"])
+        await user.move_to(channel)
         await interaction.followup.send(f"Sent {user.display_name} to jail.")
 
     @app_commands.command(name='release', description='Release someone from jail')
@@ -339,7 +340,7 @@ class Core(commands.Cog):
     async def release(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
         c = open('config.json', 'w')
-        data['jailed'].remove(user.id)
+        data['jailed'].remove({"server": interaction.guild.id, "user": user.id})
         json.dump(data, c)
         c.close()
         await interaction.followup.send(f"Release {user.display_name} from jail.")
