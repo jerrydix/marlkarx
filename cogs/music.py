@@ -133,7 +133,7 @@ class Music(commands.Cog):
                            f'required.')
     
     @app_commands.command(name='fskip', description='Force skip a song')
-    @commands.has_role("DJ")
+    @app_commands.checks.has_role("DJ")
     async def fskipsong(self, interaction: discord.Interaction):
         '''Admin command that forces skipping of the currently playing song.'''
 
@@ -148,7 +148,7 @@ class Music(commands.Cog):
             await interaction.response.send_message('Skipped song.')
     
     @app_commands.command(name='fremove', description='Force remove a song')
-    @commands.has_role("DJ")
+    @app_commands.checks.has_role("DJ")
     async def fremovesong(self, interaction: discord.Interaction, id: int = None):
         '''Admin command to forcibly remove a song from the queue by it's position.'''
 

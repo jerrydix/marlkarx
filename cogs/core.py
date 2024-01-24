@@ -324,7 +324,7 @@ class Core(commands.Cog):
 
     @app_commands.command(name='jail', description='Send someone to jail')
     @app_commands.describe(user='user')
-    @commands.has_role("Jailor")
+    @app_commands.checks.has_role("Jailor")
     async def jail(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
         jail_dict = {"server": interaction.guild.id, "user": user.id}
@@ -341,7 +341,7 @@ class Core(commands.Cog):
 
     @app_commands.command(name='release', description='Release someone from jail')
     @app_commands.describe(user='user')
-    @commands.has_role("Jailor")
+    @app_commands.checks.has_role("Jailor")
     async def release(self, interaction: discord.Interaction, user: discord.Member):
         await interaction.response.defer(ephemeral=False)
         c = open('config.json', 'w')
