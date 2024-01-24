@@ -336,7 +336,8 @@ class Core(commands.Cog):
         json.dump(data, c)
         c.close()
         channel = self.bot.get_channel(data["jail"])
-        await user.move_to(channel)
+        if user.voice is not None:
+            await user.move_to(channel)
         await interaction.followup.send(f"Sent **{user.display_name}** to jail.")
 
     @app_commands.command(name='release', description='Release someone from jail')
