@@ -25,6 +25,7 @@ def set_str_len(s: str, length: int):
     return s.ljust(length)[:length]
 
 playlists = []
+songs = []
 paused = False;
 
 class Music(commands.Cog):
@@ -37,8 +38,8 @@ class Music(commands.Cog):
             playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
             i += 1
         
-    @app_commands.command(name='play', description='Marl Karx plays a song for you')
-    @app_commands.describe(prompt='song name')
+    @app_commands.command(name='play', description='Marl Karx plays a track for you')
+    @app_commands.describe(prompt='track name')
     async def playmusic(self, interaction: discord.Interaction, prompt: str = ''):
         '''Adds a song to the queue either by YouTube URL or YouTube Search.'''\
             
@@ -60,7 +61,7 @@ class Music(commands.Cog):
         if prompt == '' and voice.is_paused() and paused:
             voice.resume()
             paused = False;
-            await interaction.followup.send('Resumed song.')
+            await interaction.followup.send('Resumed track.')
             return
         elif prompt == '':
             await interaction.followup.send('Cannot process an empty prompt.')
@@ -75,7 +76,7 @@ class Music(commands.Cog):
             return
 
         music_queue.append(song)
-        await interaction.followup.send(f'Queued song: **{song.title}**')
+        await interaction.followup.send(f'Queued track: **{song.title}**')
 
         if voice is None or not voice.is_connected():
             await channel.connect()
@@ -99,7 +100,7 @@ class Music(commands.Cog):
         else:
             await interaction.response.send_message('You\'re not in a voice channel with me.')
     
-    @app_commands.command(name='skip', description='Marl Karx skips the currently playing song')
+    @app_commands.command(name='skip', description='Marl Karx skips the currently playing track')
     async def skipsong(self, interaction: discord.Interaction):
         '''Puts in your vote to skip the currently played song.'''
 
@@ -111,11 +112,11 @@ class Music(commands.Cog):
             return
 
         if voice is None or not voice.is_playing():
-            await interaction.response.send_message('I\'m not playing a song right now.')
+            await interaction.response.send_message('I\'m not playing a track right now.')
             return
 
         if interaction.user in queue.skip_voters:
-            await interaction.response.send_message('You\'ve already voted to skip this song.')
+            await interaction.response.send_message('You\'ve already voted to skip this track.')
             return
 
         channel = interaction.user.voice.channel
@@ -124,15 +125,15 @@ class Music(commands.Cog):
         queue.add_skip_vote(interaction.user)
 
         if len(queue.skip_voters) >= required_votes:
-            await interaction.response.send_message('Skipping song after successful vote.')
+            await interaction.response.send_message('Skipping track after successful vote.')
             global paused
             paused = False;
             voice.stop()
         else:
-            await interaction.response.send_message(f'You voted to skip this song. {required_votes - len(queue.skip_voters)} more votes are '
+            await interaction.response.send_message(f'You voted to skip this track. {required_votes - len(queue.skip_voters)} more votes are '
                            f'required.')
     
-    @app_commands.command(name='fskip', description='Force skip a song')
+    @app_commands.command(name='fskip', description='Force skip a track')
     @app_commands.checks.has_role("DJ")
     async def fskipsong(self, interaction: discord.Interaction):
         '''Admin command that forces skipping of the currently playing song.'''
@@ -142,10 +143,10 @@ class Music(commands.Cog):
         if not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.response.send_message('You\'re not in a voice channel with me.')
         elif voice is None or not voice.is_playing():
-            await interaction.response.send_message('I\'m not playing a song right now.')
+            await interaction.response.send_message('I\'m not playing a track right now.')
         else:
             voice.stop()
-            await interaction.response.send_message('Skipped song.')
+            await interaction.response.send_message('Skipped track.')
     
     @app_commands.command(name='fremove', description='Force remove a song')
     @app_commands.checks.has_role("DJ")
@@ -159,20 +160,20 @@ class Music(commands.Cog):
             return
 
         if id is None or 0:
-            await interaction.response.send_message('You need to specify a song by it\'s queue index.')
+            await interaction.response.send_message('You need to specify a track by it\'s queue index.')
             return
 
         try:
             song = queue[id - 1]
         except IndexError:
-            await interaction.response.send_message('A song does not exist at this queue index.')
+            await interaction.response.send_message('A track does not exist at this queue index.')
             return
 
         queue.pop(id - 1)
         await interaction.response.send_message(f'Removed {song.title} from the queue.')
         return
     
-    @app_commands.command(name='queuedepr', description='Marl Karx shows the current song queue')
+    @app_commands.command(name='queuedepr', description='Marl Karx shows the current track queue')
     async def queuesong(self, interaction: discord.Interaction, page: int = 1):
         '''Prints out a specified page of the music queue, defaults to first page.'''
 
@@ -190,7 +191,7 @@ class Music(commands.Cog):
             await interaction.response.send_message('I don\'t have that many pages in my queue.')
             return
 
-        to_send = f'```\n    {set_str_len("Song", 66)}{set_str_len("Uploader", 36)}Requested By\n'
+        to_send = f'```\n    {set_str_len("Track", 66)}{set_str_len("Uploader", 36)}Requested By\n'
 
         for pos, song in enumerate(queue[:config.MUSIC_QUEUE_PER_PAGE * page], start=config.MUSIC_QUEUE_PER_PAGE * (page - 1)):
             title = set_str_len(song.title, 65)
@@ -200,31 +201,31 @@ class Music(commands.Cog):
         await interaction.response.send_message(to_send + '```')
         
         
-    @app_commands.command(name='songinfo', description='Displays info about the currently playing song')
+    @app_commands.command(name='trackinfo', description='Displays info about the currently playing track')
     @app_commands.describe(index='index')
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
         queue = self.music_queues.get(interaction.guild)
 
         if index not in range(len(queue) + 1):
-            return interaction.followup.send('A song does not exist at that index in the queue.')
+            return interaction.followup.send('A track does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
         
         
-    @app_commands.command(name='nowplaying', description='Displays info about the currently playing song')
+    @app_commands.command(name='nowplaying', description='Displays info about the currently playing track')
     @app_commands.describe(index='index')
     async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
         queue = self.music_queues.get(interaction.guild)
 
         if index not in range(len(queue) + 1):
-            return interaction.followup.send('A song does not exist at that index in the queue.')
+            return interaction.followup.send('A track does not exist at that index in the queue.')
 
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
     
         
-    @app_commands.command(name='queue', description='Marl Karx shows the current song queue')
+    @app_commands.command(name='queue', description='Marl Karx shows the current track queue')
     async def queueview(self, interaction: discord.Interaction):
         queue = self.music_queues.get(interaction.guild)
         
@@ -237,7 +238,7 @@ class Music(commands.Cog):
         await view.send(interaction)
         
     
-    @app_commands.command(name='pause', description='Pause the currently playing song')
+    @app_commands.command(name='pause', description='Pause the currently playing track')
     async def pause(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         voice = get(self.bot.voice_clients, guild=interaction.guild)
@@ -286,7 +287,7 @@ class Music(commands.Cog):
             c.close()
     
             
-    @app_commands.command(name='playlistadd', description='Add a song to a playlist')
+    @app_commands.command(name='playlistadd', description='Add a track to a playlist')
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
     async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], prompt: str):
@@ -311,6 +312,30 @@ class Music(commands.Cog):
         playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
         await interaction.followup.send(f'Added **{song.title}** to the **{playlist.name}** playlist.')
 
+    @app_commands.command(name='playlistremove', description='Remove a track from a playlist')
+    @app_commands.describe(playlist='playlist', track_index='track index')
+    @app_commands.choices(playlist=playlists)
+    async def playlistremove(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], track: int):
+        await interaction.response.defer(ephemeral=False)
+        c = open('config.json', 'w')
+        plist = data['playlists'][playlist.value]
+        name = plist['tracks'][track]['title']
+        del plist['tracks'][track]
+        json.dump(data, c)
+        c.close()
+        await interaction.followup.send(f'Removed **{name}** from the **{plist['name']}** playlist.')
+
+    @app_commands.command(name='deleteplaylist', description='Delete a playlist')
+    @app_commands.describe(playlist='playlist')
+    @app_commands.choices(playlist=playlists)
+    async def deleteplaylist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
+        await interaction.response.defer(ephemeral=False)
+        c = open('config.json', 'w')
+        name = data['playlists'][playlist.value]['name']
+        del data['playlists'][playlist.value]
+        json.dump(data, c)
+        c.close()
+        await interaction.followup.send(f'Deleted the **{name}** playlist.')
 
     @app_commands.command(name='playlist', description='Play a playlist')
     @app_commands.describe(playlist='playlist', shuffle='shuffle')
@@ -424,7 +449,7 @@ class Music(commands.Cog):
             return
 
         music_queue.append(song)
-        await ctx.send(f'Queued song: **{song.title}**')
+        await ctx.send(f'Queued track: **{song.title}**')
 
         if voice is None or not voice.is_connected():
             await channel.connect()
@@ -459,11 +484,11 @@ class Music(commands.Cog):
             return
 
         if voice is None or not voice.is_playing():
-            await ctx.send('I\'m not playing a song right now.')
+            await ctx.send('I\'m not playing a track right now.')
             return
 
         if ctx.author in queue.skip_voters:
-            await ctx.send('You\'ve already voted to skip this song.')
+            await ctx.send('You\'ve already voted to skip this track.')
             return
 
         channel = ctx.message.author.voice.channel
@@ -472,10 +497,10 @@ class Music(commands.Cog):
         queue.add_skip_vote(ctx.author)
 
         if len(queue.skip_voters) >= required_votes:
-            await ctx.send('Skipping song after successful vote.')
+            await ctx.send('Skipping track after successful vote.')
             voice.stop()
         else:
-            await ctx.send(f'You voted to skip this song. {required_votes - len(queue.skip_voters)} more votes are '
+            await ctx.send(f'You voted to skip this track. {required_votes - len(queue.skip_voters)} more votes are '
                            f'required.')
 
     @commands.command()
@@ -488,7 +513,7 @@ class Music(commands.Cog):
         if not self.client_in_same_channel(ctx.message.author, ctx.guild):
             await ctx.send('You\'re not in a voice channel with me.')
         elif voice is None or not voice.is_playing():
-            await ctx.send('I\'m not playing a song right now.')
+            await ctx.send('I\'m not playing a track right now.')
         else:
             voice.stop()
 
@@ -499,7 +524,7 @@ class Music(commands.Cog):
         queue = self.music_queues.get(ctx.guild)
 
         if song_index not in range(len(queue) + 1):
-            await ctx.send('A song does not exist at that index in the queue.')
+            await ctx.send('A track does not exist at that index in the queue.')
             return
 
         embed = queue.get_embed(song_index)
@@ -519,7 +544,7 @@ class Music(commands.Cog):
             for index, song in reversed(list(enumerate(queue))):
                 if ctx.author.id == song.requested_by.id:
                     queue.pop(index)
-                    await ctx.send(f'Song "{song.title}" removed from queue.')
+                    await ctx.send(f'Track "{song.title}" removed from queue.')
                     return
         else:
             queue = self.music_queues.get(ctx.guild)
@@ -532,9 +557,9 @@ class Music(commands.Cog):
 
             if ctx.author.id == song.requested_by.id:
                 queue.pop(song_id - 1)
-                await ctx.send(f'Song {song.title} removed from queue.')
+                await ctx.send(f'Track {song.title} removed from queue.')
             else:
-                await ctx.send('You cannot remove a song requested by someone else.')
+                await ctx.send('You cannot remove a track requested by someone else.')
 
     @commands.command()
     @commands.has_role("DJ")
@@ -548,13 +573,13 @@ class Music(commands.Cog):
             return
 
         if song_id is None or 0:
-            await ctx.send('You need to specify a song by it\'s queue index.')
+            await ctx.send('You need to specify a track by it\'s queue index.')
             return
 
         try:
             song = queue[song_id - 1]
         except IndexError:
-            await ctx.send('A song does not exist at this queue index.')
+            await ctx.send('A track does not exist at this queue index.')
             return
 
         queue.pop(song_id - 1)
@@ -640,7 +665,7 @@ class Music(commands.Cog):
                 ydl.download([f'{song.url}'])
             except:
                 await self.play_all_songs(guild)
-                print('Error downloading song. Skipping.')
+                print('Error downloading track. Skipping.')
                 return
         
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
@@ -687,7 +712,7 @@ class Music(commands.Cog):
                 ydl.download([f'{song.url}'])
             except:
                 await self.play_all_songs(guild)
-                print('Error downloading song. Skipping.')
+                print('Error downloading track. Skipping.')
                 return
         
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
