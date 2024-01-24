@@ -259,6 +259,7 @@ class Music(commands.Cog):
     @app_commands.command(name='createplaylist', description='Create a new playlist')
     @app_commands.describe(name='name')
     async def createplaylist(self, interaction: discord.Interaction, name: str):
+        global playlists
         if 'playlists' in data and len(data['playlists']) < 10:
             for list in data['playlists']:
                 if list['name'] == name:
@@ -270,6 +271,7 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
+            playlists = []
             i = 0
             while i < len(data['playlists']):
                 playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
@@ -280,7 +282,6 @@ class Music(commands.Cog):
             await interaction.response.send_message('Cannot add more than 10 playlists.')
             return
         else:
-            print(TODO)
             c = open('config.json', 'w')
             # playlists = {}
             list_obj = {'name': name, 'tracks': []}
@@ -333,11 +334,13 @@ class Music(commands.Cog):
     @app_commands.choices(playlist=playlists)
     async def deleteplaylist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int]):
         await interaction.response.defer(ephemeral=False)
+        global playlists
         c = open('config.json', 'w')
         name = data['playlists'][playlist.value]['name']
         del data['playlists'][playlist.value]
         json.dump(data, c)
         c.close()
+        playlists = []
         i = 0
         while i < len(data['playlists']):
             playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
