@@ -355,6 +355,16 @@ class Core(commands.Cog):
         c.close()
         await interaction.followup.send(f"Released **{user.display_name}** from jail.")
 
+    @app_commands.command(name='jaillist', description='List everyone currently in jail')
+    async def jaillist(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=False)
+        result = "Inmate List:\n"
+        for inmate in data["jailed"]:
+            if inmate["server"] == interaction.guild.id:
+                u = get(self.bot.get_all_members(), id=inmate["user"])
+                result += f"**{u.display_name}**\n"
+        await interaction.followup.send(result)
+
 
         # class Dropdown(discord.ui.Select):
     # def __init__(self, message, images, user):
