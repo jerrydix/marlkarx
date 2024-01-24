@@ -323,7 +323,7 @@ class Music(commands.Cog):
         del plist['tracks'][track]
         json.dump(data, c)
         c.close()
-        await interaction.followup.send(f'Removed **{name}** from the **{plist['name']}** playlist.')
+        await interaction.followup.send(f'Removed **{name}** from the **{plist["name"]}** playlist.')
 
     @app_commands.command(name='deleteplaylist', description='Delete a playlist')
     @app_commands.describe(playlist='playlist')
