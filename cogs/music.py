@@ -25,7 +25,6 @@ def set_str_len(s: str, length: int):
     return s.ljust(length)[:length]
 
 playlists = []
-songs = []
 paused = False;
 
 class Music(commands.Cog):
@@ -271,6 +270,10 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
+            i = 0
+            while i < len(data['playlists']):
+                playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
+                i += 1
             await interaction.response.send_message(f'Added playlist **{name}**')
             
         elif 'playlists' in data:
@@ -335,6 +338,10 @@ class Music(commands.Cog):
         del data['playlists'][playlist.value]
         json.dump(data, c)
         c.close()
+        i = 0
+        while i < len(data['playlists']):
+            playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
+            i += 1
         await interaction.followup.send(f'Deleted the **{name}** playlist.')
 
     @app_commands.command(name='playlist', description='Play a playlist')
