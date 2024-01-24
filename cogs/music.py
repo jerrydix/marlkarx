@@ -313,7 +313,7 @@ class Music(commands.Cog):
         await interaction.followup.send(f'Added **{song.title}** to the **{playlist.name}** playlist.')
 
     @app_commands.command(name='playlistremove', description='Remove a track from a playlist')
-    @app_commands.describe(playlist='playlist', track_index='track index')
+    @app_commands.describe(playlist='playlist', track='track index')
     @app_commands.choices(playlist=playlists)
     async def playlistremove(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], track: int):
         await interaction.response.defer(ephemeral=False)
