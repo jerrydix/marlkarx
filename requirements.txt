@@ -9,3 +9,4 @@ tabulate
 validators
 yt_dlp
 PyNaCl
+spotdl

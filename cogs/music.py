@@ -1,6 +1,8 @@
 import asyncio
 import os
 import subprocess
+
+import spotdl
 import validators
 import random
 from collections import defaultdict
@@ -9,6 +11,7 @@ import json
 import discord
 from discord import app_commands
 import yt_dlp
+import spotdl
 from discord.ext import commands
 from discord.utils import get
 from pathlib import Path
@@ -657,26 +660,42 @@ class Music(commands.Cog):
 
         voice = get(self.bot.voice_clients, guild=guild)
         queue = self.music_queues.get(guild)
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'noplaylist': True,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'opus',
-                'preferredquality': '192',
-            }],
-            'outtmpl': audio_path
-        }
 
-        Path(audio_dir).mkdir(parents=True, exist_ok=True)
+        if song.url.startswith("https://open.spotify.com/"):
+            args = {
+                'format': 'opus',
+                'output': 'audiopath.opus'
+            }
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
             try:
-                ydl.download([f'{song.url}'])
+                spotdl_handler.download(song=song.url)
             except:
                 await self.play_all_songs(guild)
-                print('Error downloading track. Skipping.')
+                print('Error downloading spotify track. Skipping.')
                 return
+
+        else:
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'noplaylist': True,
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'opus',
+                    'preferredquality': '192',
+                }],
+                'outtmpl': audio_path
+            }
+
+            Path(audio_dir).mkdir(parents=True, exist_ok=True)
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                try:
+                    ydl.download([f'{song.url}'])
+                except:
+                    await self.play_all_songs(guild)
+                    print('Error downloading track. Skipping.')
+                    return
         
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
