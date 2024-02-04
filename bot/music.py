@@ -93,7 +93,8 @@ class Song(dict):
             self['requested_by'] = author
             return
 
-        self.download_info(url, author)
+        if not url.startswith("https://open.spotify.com/"):
+            self.download_info(url, author)
 
         if self.duration_raw > config.MUSIC_MAX_DURATION_MINS*60:
             raise SongRequestError(f'Your song was too long, keep it under {config.MUSIC_MAX_DURATION_MINS}mins')
