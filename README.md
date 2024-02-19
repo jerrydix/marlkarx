@@ -1,4 +1,4 @@
-![Docker Image Version](https://img.shields.io/docker/v/chernogop69/marlkarx?logo=docker)
+![Docker Image Version](https://img.shields.io/docker/v/chernogop69/marlkarx?logo=docker) [Docker Image](https://hub.docker.com/repository/docker/chernogop69/marlkarx/general)
 # Marl Karx
 A simple Discord.py bot that has neat unique features and music functionality 
 
