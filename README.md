@@ -1,4 +1,4 @@
-![Docker Image Version](https://img.shields.io/docker/v/chernogop69/marlkarx?logo=docker)
+![Static Badge](https://img.shields.io/badge/Docker%20Image-505050?logo=docker&link=https%3A%2F%2Fhub.docker.com%2Frepository%2Fdocker%2Fchernogop69%2Fmarlkarx%2Fgeneral) ![Docker Image Version](https://img.shields.io/docker/v/chernogop69/marlkarx)
 # Marl Karx
 A simple Discord.py bot that has neat unique features and music functionality 
 
