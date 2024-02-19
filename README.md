@@ -1,4 +1,4 @@
-![example workflow](https://github.com/jerrydix/marlkarx/actions/workflows/main.yml/badge.svg)
+![Docker Image Version](https://img.shields.io/docker/v/chernogop69/marlkarx)
 # Marl Karx
 A simple Discord.py bot that has neat unique features and music functionality 
 
