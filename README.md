@@ -1,3 +1,4 @@
+![example workflow](https://github.com/jerrydix/marlkarx/actions/workflows/main.yml/badge.svg)
 # Marl Karx
 A simple Discord.py bot that has neat unique features and music functionality 
 
