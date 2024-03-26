@@ -1,6 +1,5 @@
 import asyncio
 import os
-import subprocess
 
 import spotdl
 import validators
@@ -11,7 +10,6 @@ import json
 import discord
 from discord import app_commands
 import yt_dlp
-import spotdl
 from discord.ext import commands
 from discord.utils import get
 from pathlib import Path
