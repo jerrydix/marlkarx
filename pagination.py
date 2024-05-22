@@ -105,11 +105,14 @@ class HelpView(discord.ui.View):
                                                               ['/pinglistgames',
                                                                'List all games subscribed to the ping system.'],
                                                               ['/imagine <prompt>',
-                                                               'Make Marl Karx create an image out of your prompt.'],
+                                                               'Marl Karx creates an image out of your prompt.'],
                                                               ['/complete <prompt>',
-                                                               'Make Marl Karx write a text based on your prompt.'],
+                                                               'Marl Karx writes a text based on your prompt.'],
                                                               ['/purge <amount>',
-                                                               'Delete the last <amount> messages.']]) + '```'
+                                                               'Delete the last <amount> messages.'],
+                                                              ['/emojify <image_url>',
+                                                               'Emojify the given image.'],
+                                                              ['/remind <user> <datetime> <message>', 'Marl Karx reminds someone with <message> at a given date and time (processed via nlp)']]) + '```'
     
     music_help: str = '```Music commands:\n' + tabulate([['/play <prompt>', 'Marl Karx plays the desired song for you. (Resumes playback if no argument given)'], ['/pause', 'Marl Karx pauses the playback.'], ['/skip', 'Marl Karx skips the currently playing song.'], ['/stop', 'Marl Karx stops the playback and clear the queue.'], ['/nowplaying <index> || /songinfo <index>', 'Displays info about the song at <index> in the queue. (Current song if no index given)'], ['/createplaylist <name>', 'Marl Karx creates a playlist with the specified name.'], ['/playlist <name>', 'Marl Karx enqueues the desired playlist.'], ['/playlistadd <playlist> <song>', 'Marl Karx adds <song> to <playlist>.']]) + '```'
     
