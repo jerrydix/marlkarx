@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-import spotdl
+#import spotdl
 import validators
 import random
 from collections import defaultdict
@@ -665,13 +665,14 @@ class Music(commands.Cog):
                 'output': f'{audio_path}.opus'
             }
 
-            spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
-            try:
-                spotdl_handler.download(song=song.url)
-            except:
-                await self.play_all_songs(guild)
-                print('Error downloading spotify track. Skipping.')
-                return
+            #todo read when spotdl is fixed
+            #spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
+            #try:
+                #spotdl_handler.download(song=song.url)
+            #except:
+            #    await self.play_all_songs(guild)
+            #    print('Error downloading spotify track. Skipping.')
+            #    return
 
         else:
             ydl_opts = {
@@ -700,7 +701,7 @@ class Music(commands.Cog):
         queue.clear_skip_votes()
 
 
-    async def stream_song(self, guild: discord.Guild, prompt: str):
+    async def stream_song(self, guild: discord.Guild, song: str):
         '''Streams a YouTube video's audio into a VC.'''
         FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 
