@@ -662,7 +662,7 @@ class Music(commands.Cog):
         if song.url.startswith("https://open.spotify.com/"):
             args = {
                 'format': 'opus',
-                'output': 'audiopath.opus'
+                'output': f'{audio_path}.opus'
             }
 
             spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
