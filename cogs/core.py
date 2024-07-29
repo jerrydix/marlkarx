@@ -52,7 +52,7 @@ class Core(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def send_daily_quote(self):
-        if (datetime.now().time().hour == 19 and datetime.now().time().minute == 0):
+        if datetime.now().time().hour == 19 and datetime.now().time().minute == 0:
             channel = self.bot.get_channel(779824836498948118)
             await channel.send('**Tägliches Zitat:**\n*\"' + self.pick_quote() + '\"*')
             

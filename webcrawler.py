@@ -1,7 +1,8 @@
 import re
-
 import requests
 from bs4 import BeautifulSoup
+
+
 def crawl_quotes(url):
     content = requests.get(url).text
     soup = BeautifulSoup(content, features="html.parser")
@@ -24,8 +25,6 @@ def crawl_quotes(url):
             quotes.append(x.group(1))
 
     return quotes
-
-
 
 
 crawl_quotes('https://de.wikiquote.org/wiki/Karl_Marx')

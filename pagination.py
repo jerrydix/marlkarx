@@ -1,5 +1,7 @@
 import discord
 from tabulate import tabulate
+from PIL import Image
+from urllib.request import Request, urlopen
 
 class QueueView(discord.ui.View):
     
@@ -163,3 +165,102 @@ class HelpView(discord.ui.View):
         self.current_page += 1
         await self.update_msg()
 
+class MatchView(discord.ui.View):
+    current_page: int = 1
+    sep: int = 8
+
+    async def send(self, channel: discord.TextChannel):
+        self.message = await channel.send(view=self)
+        await self.update_msg(self.data[:self.sep])
+
+    def create_embed(self, data):
+        #embeds = []
+        embed = discord.Embed(title='Today\'s CS2 E-Sports Results:', colour=discord.Colour.dark_red(),
+                              url='https://www.hltv.org/')
+
+        file = None
+        j = 0
+        for i in data:
+
+            if i.result.team1 > i.result.team2:
+                r1 = f"***{i.result.team1}***"
+                r2 = f"{i.result.team2}"
+            else:
+                r1 = f"{i.result.team1}"
+                r2 = f"***{i.result.team2}***"
+            embed.add_field(name=i.team1.name, value="", inline=True)
+            embed.add_field(name=f"{r1} - {r2}", value="", inline=True)
+            embed.add_field(name=i.team2.name, value="", inline=True)
+            print(i.team1.logo, i.team2.logo)
+            if i.team1.logo == "/img/static/team/placeholder.svg" or i.team2.logo == "/img/static/team/placeholder.svg" or ".svg" in str(i.team1.logo) or ".svg" in str(i.team2.logo):
+                continue
+            if j != 0:
+                continue
+            j = 1
+            reqs = [Request(i.team1.logo), Request(i.team2.logo)]
+            i = 0
+            for req in reqs:
+                req.add_header('User-Agent',
+                           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36')
+                content = urlopen(req).read()
+                with open(f'input{i}.webp', 'wb') as f:
+                    f.write(content)
+                im = Image.open(f"input{i}.webp").convert('RGBA')
+                im.save(f'output{i}.png', 'PNG')
+                i += 1
+
+            images = [Image.open(x) for x in ['output1.png', 'output2.png']]
+            widths, heights = zip(*(i.size for i in images))
+
+            total_width = sum(widths)
+            max_height = max(heights)
+
+            new_im = Image.new('ARGB', (total_width, max_height))
+
+            x_offset = 0
+            for im in images:
+                new_im.paste(im, (x_offset + 2, 0))
+                x_offset += im.size[0]
+
+            new_im.save('output_comb.png')
+
+            file = discord.File(f"output_comb.png", filename=f"output_comb.png")
+            embed.set_thumbnail(url='attachment://output_comb.png')
+            #embeds.append(embed)
+        return embed, file
+
+    async def update_msg(self, data):
+        self.update_buttons()
+        embed, file = self.create_embed(data)
+        await self.message.edit(attachments=[file], embed=embed, view=self)
+
+    def update_buttons(self):
+        if self.current_page == 1:
+            self.prev_button.disabled = True
+            self.prev_button.style = discord.ButtonStyle.gray
+        else:
+            self.prev_button.disabled = False
+            self.prev_button.style = discord.ButtonStyle.red
+
+        if self.current_page == int(len(self.data) / self.sep) + 1:
+            self.next_button.disabled = True
+            self.next_button.style = discord.ButtonStyle.gray
+        else:
+            self.next_button.disabled = False
+            self.next_button.style = discord.ButtonStyle.red
+
+    @discord.ui.button(label='<', style=discord.ButtonStyle.primary)
+    async def prev_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        self.current_page -= 1
+        until_item = self.current_page * self.sep
+        from_item = until_item - self.sep
+        await self.update_msg(self.data[from_item:until_item])
+
+    @discord.ui.button(label='>', style=discord.ButtonStyle.primary)
+    async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+        self.current_page += 1
+        until_item = self.current_page * self.sep
+        from_item = until_item - self.sep
+        await self.update_msg(self.data[from_item:until_item])
