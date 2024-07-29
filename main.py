@@ -102,7 +102,7 @@ async def on_message(message: discord.Message):
         jerrimeter = float(number) / 0.023
 
     if jerrimeter != "" and number != "":
-        await message.channel.send(f"{number} {measure} correspond to {jerrimeter} Jerrimeter(s).")
+        await message.channel.send(f"{float(number)} {measure} correspond to {jerrimeter} Jerrimeter(s).")
 
 
 
