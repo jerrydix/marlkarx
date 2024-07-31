@@ -104,8 +104,8 @@ async def on_message(message: discord.Message):
         number, measure, jm = calculate_jerrimeter("zm", message)
     elif "ym" in message.content:
         number, measure, jm = calculate_jerrimeter("ym", message)
-    elif "m" in message.content and "cm" not in message.content:
-        number, measure, jm = calculate_jerrimeter("[]m", message)
+    elif "m" in message.content:
+        number, measure, jm = calculate_jerrimeter("m", message)
 
     if jm != "" and number != "":
         number = "%g" % number
