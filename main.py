@@ -106,6 +106,8 @@ async def on_message(message: discord.Message):
         number, measure, jm = calculate_jerrimeter("ym", message)
     elif "m" in message.content:
         number, measure, jm = calculate_jerrimeter("m", message)
+    elif "ly" in message.content or "light years" in message.content or "light year" in message.content:
+        number, measure, jm = calculate_jerrimeter("ly", message)
 
     if jm != "" and number != "":
         number = "%g" % number
@@ -150,6 +152,8 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         jm = number / 230000000000000000000
     elif measure == "ym":
         jm = number / 230000000000000000000000
+    elif measure == "ly" or measure == "light years" or measure == "light year":
+        jm = number * 946073047258004200 / 23
 
     else:
         return "", measure, ""
