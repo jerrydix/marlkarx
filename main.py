@@ -157,6 +157,7 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
     elif measure == "ym":
         jm = number / 230000000000000000000000
     elif measure == "ly" or measure == "light years" or measure == "light year":
+        measure = "ly"
         jm = number * 946073047258004200 / 23
 
     else:
