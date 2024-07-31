@@ -108,7 +108,9 @@ async def on_message(message: discord.Message):
         number, measure, jm = calculate_jerrimeter("[]m", message)
 
     if jm != "" and number != "":
-        await message.channel.send(f"{number} {measure} correspond to {jm} Jerrimeter(s).")
+        number = "%g" % number
+        jm_measure = "Jerrimeter" if jm == 1 else "Jerrimeters"
+        await message.channel.send(f"{number} {measure} correspond to {jm} {jm_measure}.")
 
 
 def calculate_jerrimeter(measure: str, message: discord.Message):
