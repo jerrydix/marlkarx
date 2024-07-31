@@ -91,7 +91,7 @@ async def on_message(message: discord.Message):
     elif "mm" in message.content:
         number, measure, jm = calculate_jerrimeter("mm", message)
     elif "µm" in message.content:
-        number, measure, jm = calculate_jerrimeter("mjum", message)
+        number, measure, jm = calculate_jerrimeter("µm", message)
     elif "nm" in message.content:
         number, measure, jm = calculate_jerrimeter("nm", message)
     elif "pm" in message.content:
@@ -119,9 +119,9 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
     if index < 0:
         index = 0
     try:
-        number = float(message.content[index:message.content.index("m")].replace(",", "."))
+        number = float(message.content[index:message.content.index(measure)].replace(",", "."))
     except ValueError:
-        return ""
+        return "", "", ""
 
     if measure == "cm":
         jm = number / 23
@@ -133,14 +133,7 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         jm = number / 2.3
     elif measure == "mm":
         jm = number / 230
-    # elif measure == "ft" or measure == "feet":
-    #    return number / 0.075
-    # elif measure == "in" or measure == "inch":
-    #    return number / 0.92
-    # elif measure == "yd" or measure == "yard":
-    #    return number / 0.025
-    elif measure == "mjum":
-        measure = "µm"
+    elif measure == "µm":
         jm = number / 230000
     elif measure == "nm":
         jm = number / 230000000
