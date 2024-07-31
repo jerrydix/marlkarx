@@ -109,8 +109,8 @@ async def on_message(message: discord.Message):
 
     if jm != "" and number != "":
         number = "%g" % number
-        jm = "%g" % jm
         jm_measure = "Jerrimeter" if jm == 1 else "Jerrimeters"
+        jm = "%g" % jm
         await message.channel.send(f"{number} {measure} correspond to {jm} {jm_measure}.")
 
 
