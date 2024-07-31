@@ -133,12 +133,6 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         jm = number / 2.3
     elif measure == "mm":
         jm = number / 230
-    # elif measure == "ft" or measure == "feet":
-    #    return number / 0.075
-    # elif measure == "in" or measure == "inch":
-    #    return number / 0.92
-    # elif measure == "yd" or measure == "yard":
-    #    return number / 0.025
     elif measure == "mjum":
         measure = "µm"
         jm = number / 230000
