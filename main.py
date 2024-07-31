@@ -43,7 +43,7 @@ class Client(commands.Bot):
     async def setup_hook(self):
         await self.load_extension('cogs.core')
         await self.load_extension('cogs.music')
-        await self.load_extension('cogs.hltv')
+        #await self.load_extension('cogs.hltv')
 
 
 bot = Client()
