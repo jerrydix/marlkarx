@@ -10,6 +10,7 @@ from discord.ext import commands
 from discord.ext import tasks
 from discord.utils import get
 import webcrawler
+import re
 
 quote_url = 'https://de.wikiquote.org/wiki/Karl_Marx'
 quotes = webcrawler.crawl_quotes(quote_url)
@@ -129,7 +130,9 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         index = 0
     try:
         # number = float(message.content[index:message.content.index(measure)].replace(",", "."))
-        number = float(r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year)')
+        regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year)'
+        matches = re.findall(regex, message.content)
+        number = float(matches[0])
     except ValueError:
         return "", "", ""
 
