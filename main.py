@@ -128,7 +128,8 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
     if index < 0:
         index = 0
     try:
-        number = float(message.content[index:message.content.index(measure)].replace(",", "."))
+        # number = float(message.content[index:message.content.index(measure)].replace(",", "."))
+        number = float(r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year)')
     except ValueError:
         return "", "", ""
 
