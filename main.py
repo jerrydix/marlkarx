@@ -118,7 +118,7 @@ async def on_message(message: discord.Message):
         number = "%g" % number
         jm_measure = "Jerrimeter" if jm == 1 else "Jerrimeters"
         jm = "%g" % jm
-        await message.channel.send(f"{number} {measure} correspond to {jm} {jm_measure}.")
+        await message.channel.send(f"{number}{measure} correspond to {jm} {jm_measure}.")
 
 
 def calculate_jerrimeter(measure: str, message: discord.Message):
@@ -132,7 +132,8 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         # number = float(message.content[index:message.content.index(measure)].replace(",", "."))
         regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year)'
         matches = re.findall(regex, message.content)
-        number = float(matches[0])
+        print(matches)
+        number = float(matches[0][0])
     except ValueError:
         return "", "", ""
 
