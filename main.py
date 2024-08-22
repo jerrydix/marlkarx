@@ -79,46 +79,53 @@ async def on_member_join(member: discord.Member):
 
 @bot.event
 async def on_message(message: discord.Message):
-    number, measure, jm = "", "", ""
+    number, measure, jm, convertBack = "", "", "", ""
     if message.author == bot.user:
         return
 
     if "cm" in message.content:
-        number, measure, jm = calculate_jerrimeter("cm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("cm", message)
     elif "km" in message.content:
-        number, measure, jm = calculate_jerrimeter("km", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("km", message)
     elif "dm" in message.content:
-        number, measure, jm = calculate_jerrimeter("dm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("dm", message)
     elif "mm" in message.content:
-        number, measure, jm = calculate_jerrimeter("mm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("mm", message)
     elif "µm" in message.content:
-        number, measure, jm = calculate_jerrimeter("µm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("µm", message)
     elif "nm" in message.content:
-        number, measure, jm = calculate_jerrimeter("nm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("nm", message)
     elif "pm" in message.content:
-        number, measure, jm = calculate_jerrimeter("pm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("pm", message)
     elif "fm" in message.content:
-        number, measure, jm = calculate_jerrimeter("fm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("fm", message)
     elif "am" in message.content:
-        number, measure, jm = calculate_jerrimeter("am", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("am", message)
     elif "zm" in message.content:
-        number, measure, jm = calculate_jerrimeter("zm", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("zm", message)
     elif "ym" in message.content:
-        number, measure, jm = calculate_jerrimeter("ym", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("ym", message)
     elif "m" in message.content:
-        number, measure, jm = calculate_jerrimeter("m", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("m", message)
     elif "ly" in message.content:
-        number, measure, jm = calculate_jerrimeter("ly", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("ly", message)
     elif "light year" in message.content:
-        number, measure, jm = calculate_jerrimeter("light year", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("light year", message)
     elif "light years" in message.content:
-        number, measure, jm = calculate_jerrimeter("light years", message)
+        number, measure, jm, convertBack = calculate_jerrimeter("light years", message)
+    elif "Jerrimeter" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeter", message)
+    elif "Jerrimeters" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeters", message)
 
     if jm != "" and number != "":
         number = "%g" % number
         jm_measure = "Jerrimeter" if jm == 1 else "Jerrimeters"
         jm = "%g" % jm
-        await message.channel.send(f"{number}{measure} correspond to {jm} {jm_measure}.")
+        if not convertBack:
+            await message.channel.send(f"{number} {measure} correspond to {jm} {jm_measure}.")
+        else:
+            await message.channel.send(f"{number} {measure} correspond to {jm} cm.")
 
 
 def calculate_jerrimeter(measure: str, message: discord.Message):
@@ -130,12 +137,13 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         index = 0
     try:
         # number = float(message.content[index:message.content.index(measure)].replace(",", "."))
-        regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year)'
+        regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year|Jerrimeter|Jerrimeters)'
         matches = re.findall(regex, message.content)
-        print(matches)
         number = float(matches[0][0])
     except ValueError:
-        return "", "", ""
+        return "", "", "", ""
+
+    convertBack = False
 
     if measure == "cm":
         jm = number / 23
@@ -164,11 +172,14 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
     elif measure == "ly" or measure == "light years" or measure == "light year":
         measure = "ly"
         jm = number * 946073047258004200 / 23
+    elif measure == "Jerrimeter" or measure == "Jerrimeters":
+        jm = number * 23
+        convertBack = True
 
     else:
         return "", measure, ""
 
-    return number, measure, jm
+    return number, measure, jm, convertBack
 
 
 @bot.event
