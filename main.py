@@ -105,8 +105,6 @@ async def on_message(message: discord.Message):
         number, measure, jm, convertBack = calculate_jerrimeter("zm", message)
     elif "ym" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("ym", message)
-    elif "m" in message.content:
-        number, measure, jm, convertBack = calculate_jerrimeter("m", message)
     elif "ly" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("ly", message)
     elif "light year" in message.content:
@@ -117,6 +115,8 @@ async def on_message(message: discord.Message):
         number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeter", message)
     elif "Jerrimeters" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeters", message)
+    elif "m" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("m", message)
 
     if jm != "" and number != "":
         number = "%g" % number
