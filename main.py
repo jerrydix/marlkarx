@@ -111,8 +111,16 @@ async def on_message(message: discord.Message):
         number, measure, jm, convertBack = calculate_jerrimeter("light year", message)
     elif "light years" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("light years", message)
-    elif "Jerrimeters" in message.content or "Jerrimeter" in message.content or "jerrimeters" in message.content or "jerrimeter" in message.content or "jm" in message.content:
+    elif "Jerrimeters" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeters", message)
+    elif "Jerrimeter" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeter", message)
+    elif "jerrimeters" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("jerrimeters", message)
+    elif "jerrimeter" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("jerrimeter", message)
+    elif "jm" in message.content:
+        number, measure, jm, convertBack = calculate_jerrimeter("jm", message)
     elif "m" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("m", message)
 
