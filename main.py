@@ -144,7 +144,7 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
         index = 0
     try:
         # number = float(message.content[index:message.content.index(measure)].replace(",", "."))
-        regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year|Jerrimeter|Jerrimeters)'
+        regex = r'(\d+(\.\d+)?)\s*(cm|m|km|dm|mm|µm|nm|pm|fm|am|zm|ym|ly|light years|light year|Jerrimeter|Jerrimeters|jm|jerrimeter|jerrimeters)'
         matches = re.findall(regex, message.content)
         number = float(matches[0][0])
     except ValueError:
