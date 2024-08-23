@@ -111,10 +111,8 @@ async def on_message(message: discord.Message):
         number, measure, jm, convertBack = calculate_jerrimeter("light year", message)
     elif "light years" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("light years", message)
-    elif "Jerrimeters" in message.content:
+    elif "Jerrimeters" in message.content or "Jerrimeter" in message.content or "jerrimeters" in message.content or "jerrimeter" in message.content or "jm" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeters", message)
-    elif "Jerrimeter" in message.content:
-        number, measure, jm, convertBack = calculate_jerrimeter("Jerrimeter", message)
     elif "m" in message.content:
         number, measure, jm, convertBack = calculate_jerrimeter("m", message)
 
@@ -125,6 +123,7 @@ async def on_message(message: discord.Message):
         if not convertBack:
             await message.channel.send(f"{number} {measure} correspond to {jm} {jm_measure}.")
         else:
+            measure = "Jerrimeter" if number == 1 else "Jerrimeters"
             await message.channel.send(f"{number} {measure} correspond to {jm} cm.")
 
 
