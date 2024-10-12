@@ -128,7 +128,6 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='pingadd', description='Add a user to a ping command')
-    @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping_add(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
@@ -144,7 +143,6 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='pingremove', description='Remove a user from a ping command')
-    @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping_remove(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int], user: discord.User):
@@ -161,7 +159,6 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='pingaddgame', description='Add a game to the ping list')
-    @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     async def ping_add_game(self, interaction: discord.Interaction, game: str):
         await interaction.response.defer()
@@ -191,7 +188,6 @@ class Core(commands.Cog):
 
 
     @app_commands.command(name='pingremovegame', description='Remove a game fromd the ping list')
-    @app_commands.checks.has_role(781223345319706646)
     @app_commands.describe(game='game')
     @app_commands.choices(game=game_choices)
     async def ping_remove_game(self, interaction: discord.Interaction, game: discord.app_commands.Choice[int]):
