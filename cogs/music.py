@@ -638,7 +638,8 @@ class Music(commands.Cog):
             song = queue.next_song()
             await self.prepare_next_song(guild, song, path_counter)
             await self.wait_for_end_of_song(guild)
-            await self.play_song_no_prepare(guild)
+            await self.play_song_no_prepare(guild, path_counter)
+            print('Playing ' + song.title)
             path_counter += 1
 
         # Disconnect after song queue is empty
@@ -702,10 +703,10 @@ class Music(commands.Cog):
 
         print('Finished preparing ' + os.path.abspath(audio_path) + '.opus')
 
-    async def play_song_no_prepare(self, guild: discord.Guild):
+    async def play_song_no_prepare(self, guild: discord.Guild, path_counter: int):
 
         audio_dir = os.path.join('.', 'audio')
-        audio_path = os.path.join(audio_dir, f'{guild.id}')
+        audio_path = os.path.join(audio_dir, f'{guild.id + path_counter}')
 
         voice = get(self.bot.voice_clients, guild=guild)
         queue = self.music_queues.get(guild)
