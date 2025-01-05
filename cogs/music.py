@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-#import spotdl
+# import spotdl
 import validators
 import random
 from collections import defaultdict
@@ -20,13 +20,16 @@ from bot.music import Queue, Song, SongRequestError
 from pagination import QueueView
 from cogs.core import data
 
+
 def set_str_len(s: str, length: int):
     '''Adds whitespace or trims string to enforce a specific size'''
 
     return s.ljust(length)[:length]
 
+
 playlists = []
 paused = False;
+
 
 class Music(commands.Cog):
 
@@ -37,12 +40,12 @@ class Music(commands.Cog):
         while i < len(data['playlists']):
             playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
             i += 1
-        
+
     @app_commands.command(name='play', description='Marl Karx plays a track for you')
     @app_commands.describe(prompt='track name')
     async def playmusic(self, interaction: discord.Interaction, prompt: str = ''):
-        '''Adds a song to the queue either by YouTube URL or YouTube Search.'''\
-            
+        '''Adds a song to the queue either by YouTube URL or YouTube Search.'''
+
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         await interaction.response.defer(ephemeral=False)
@@ -57,7 +60,7 @@ class Music(commands.Cog):
         if voice is not None and not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
-            
+
         if prompt == '' and voice.is_paused() and paused:
             voice.resume()
             paused = False;
@@ -65,7 +68,7 @@ class Music(commands.Cog):
             return
         elif prompt == '':
             await interaction.followup.send('Cannot process an empty prompt.')
-   
+
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
@@ -82,9 +85,9 @@ class Music(commands.Cog):
             await channel.connect()
 
         await self.play_all_songs(interaction.guild)
-        
+
         # @app_commands.checks.has_role(781223345319706646)
-        
+
     @app_commands.command(name='stop', description='Marl Karx stops all music and clears the queue')
     async def stopsong(self, interaction: discord.Interaction):
         '''Admin command that stops playback of music and clears out the music queue.'''
@@ -99,7 +102,7 @@ class Music(commands.Cog):
             await voice.disconnect()
         else:
             await interaction.response.send_message('You\'re not in a voice channel with me.')
-    
+
     @app_commands.command(name='skip', description='Marl Karx skips the currently playing track')
     async def skipsong(self, interaction: discord.Interaction):
         '''Puts in your vote to skip the currently played song.'''
@@ -130,9 +133,10 @@ class Music(commands.Cog):
             paused = False;
             voice.stop()
         else:
-            await interaction.response.send_message(f'You voted to skip this track. {required_votes - len(queue.skip_voters)} more votes are '
-                           f'required.')
-    
+            await interaction.response.send_message(
+                f'You voted to skip this track. {required_votes - len(queue.skip_voters)} more votes are '
+                f'required.')
+
     @app_commands.command(name='fskip', description='Force skip a track')
     @app_commands.checks.has_role("DJ")
     async def fskipsong(self, interaction: discord.Interaction):
@@ -147,7 +151,7 @@ class Music(commands.Cog):
         else:
             voice.stop()
             await interaction.response.send_message('Skipped track.')
-    
+
     @app_commands.command(name='fremove', description='Force remove a song')
     @app_commands.checks.has_role("DJ")
     async def fremovesong(self, interaction: discord.Interaction, id: int = None):
@@ -172,7 +176,7 @@ class Music(commands.Cog):
         queue.pop(id - 1)
         await interaction.response.send_message(f'Removed {song.title} from the queue.')
         return
-    
+
     @app_commands.command(name='queuedepr', description='Marl Karx shows the current track queue')
     async def queuesong(self, interaction: discord.Interaction, page: int = 1):
         '''Prints out a specified page of the music queue, defaults to first page.'''
@@ -193,14 +197,14 @@ class Music(commands.Cog):
 
         to_send = f'```\n    {set_str_len("Track", 66)}{set_str_len("Uploader", 36)}Requested By\n'
 
-        for pos, song in enumerate(queue[:config.MUSIC_QUEUE_PER_PAGE * page], start=config.MUSIC_QUEUE_PER_PAGE * (page - 1)):
+        for pos, song in enumerate(queue[:config.MUSIC_QUEUE_PER_PAGE * page],
+                                   start=config.MUSIC_QUEUE_PER_PAGE * (page - 1)):
             title = set_str_len(song.title, 65)
             uploader = set_str_len(song.uploader, 35)
             to_send += f'{set_str_len(f"{pos + 1})", 4)}{title}|{uploader}|{song.requested_by.display_name}\n'
 
         await interaction.response.send_message(to_send + '```')
-        
-        
+
     @app_commands.command(name='trackinfo', description='Displays info about the currently playing track')
     @app_commands.describe(index='index')
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
@@ -211,8 +215,7 @@ class Music(commands.Cog):
 
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
-        
-        
+
     @app_commands.command(name='nowplaying', description='Displays info about the currently playing track')
     @app_commands.describe(index='index')
     async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
@@ -223,40 +226,37 @@ class Music(commands.Cog):
 
         embed = queue.get_embed(index)
         await interaction.response.send_message(embed=embed)
-    
-        
+
     @app_commands.command(name='queue', description='Marl Karx shows the current track queue')
     async def queueview(self, interaction: discord.Interaction):
         queue = self.music_queues.get(interaction.guild)
-        
+
         if not queue:
             await interaction.response.send_message('I don\'t have anything in my queue right now.')
             return
-        
+
         view = QueueView()
         view.data = queue
         await view.send(interaction)
-        
-    
+
     @app_commands.command(name='pause', description='Pause the currently playing track')
     async def pause(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=False)
         voice = get(self.bot.voice_clients, guild=interaction.guild)
-        
+
         if not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.response.send_message('You\'re not in a voice channel with me.')
             return
-        
+
         if not voice.is_playing():
             await interaction.response.send_message('I don\'t have anything playing right now.')
             return
-        
+
         global paused
         paused = True
         voice.pause()
         await interaction.followup.send('Paused song.')
-       
-        
+
     @app_commands.command(name='createplaylist', description='Create a new playlist')
     @app_commands.describe(name='name')
     async def createplaylist(self, interaction: discord.Interaction, name: str):
@@ -264,7 +264,8 @@ class Music(commands.Cog):
         if 'playlists' in data and len(data['playlists']) < 10:
             for list in data['playlists']:
                 if list['name'] == name:
-                    await interaction.response.send_message('This playlist already exits. Can\'t add playlist with same name twice.')
+                    await interaction.response.send_message(
+                        'This playlist already exits. Can\'t add playlist with same name twice.')
                     return
             c = open('config.json', 'w')
             list_obj = {'name': name, 'tracks': []}
@@ -278,7 +279,7 @@ class Music(commands.Cog):
                 playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
                 i += 1
             await interaction.response.send_message(f'Added playlist **{name}**')
-            
+
         elif 'playlists' in data:
             await interaction.response.send_message('Cannot add more than 10 playlists.')
             return
@@ -290,12 +291,12 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
-    
-            
+
     @app_commands.command(name='playlistadd', description='Add a track to a playlist')
     @app_commands.describe(playlist='playlist')
     @app_commands.choices(playlist=playlists)
-    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], prompt: str):
+    async def playlistadd(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int],
+                          prompt: str):
         await interaction.response.defer(ephemeral=False)
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
@@ -308,19 +309,25 @@ class Music(commands.Cog):
 
         c = open('config.json', 'w')
 
-        song_dict = dict(url = song.url, title = song.title, uploader = song.uploader, duration_raw = song.duration_raw, duration_formatted = song.duration_formatted, description = song.description, upload_date_raw = song.upload_date_raw, upload_date_formatted = song.upload_date_formatted, views = song.views, likes = song.likes, dislikes = song.dislikes, thumbnail = song.thumbnail, requested_by = "")
+        song_dict = dict(url=song.url, title=song.title, uploader=song.uploader, duration_raw=song.duration_raw,
+                         duration_formatted=song.duration_formatted, description=song.description,
+                         upload_date_raw=song.upload_date_raw, upload_date_formatted=song.upload_date_formatted,
+                         views=song.views, likes=song.likes, dislikes=song.dislikes, thumbnail=song.thumbnail,
+                         requested_by="")
         json.dumps(song_dict)
-    
+
         data['playlists'][playlist.value]['tracks'].append(song_dict)
         json.dump(data, c)
         c.close()
-        playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'], value=len(data['playlists']) - 1))
+        playlists.append(discord.app_commands.Choice(name=data['playlists'][len(data['playlists']) - 1]['name'],
+                                                     value=len(data['playlists']) - 1))
         await interaction.followup.send(f'Added **{song.title}** to the **{playlist.name}** playlist.')
 
     @app_commands.command(name='playlistremove', description='Remove a track from a playlist')
     @app_commands.describe(playlist='playlist', track='track index')
     @app_commands.choices(playlist=playlists)
-    async def playlistremove(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], track: int):
+    async def playlistremove(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int],
+                             track: int):
         await interaction.response.defer(ephemeral=False)
         c = open('config.json', 'w')
         plist = data['playlists'][playlist.value]
@@ -351,7 +358,8 @@ class Music(commands.Cog):
     @app_commands.command(name='playlist', description='Play a playlist')
     @app_commands.describe(playlist='playlist', shuffle='shuffle')
     @app_commands.choices(playlist=playlists)
-    async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int], shuffle: bool = False):
+    async def playlist(self, interaction: discord.Interaction, playlist: discord.app_commands.Choice[int],
+                       shuffle: bool = False):
         await interaction.response.defer(ephemeral=False)
         music_queue = self.music_queues[interaction.guild]
         voice = get(self.bot.voice_clients, guild=interaction.guild)
@@ -364,17 +372,17 @@ class Music(commands.Cog):
         if voice is not None and not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.followup.send('You\'re not in my voice channel.')
             return
-            
+
         if len(data['playlists'][playlist.value]['tracks']) == 0:
             await interaction.followup.send('There are no tracks in this playlist.')
             return
-        
+
         first = True
         list = data['playlists'][playlist.value]['name']
         tracks = data['playlists'][playlist.value]['tracks']
         if shuffle:
             random.shuffle(tracks)
-        
+
         for track in tracks:
             try:
                 song = Song('', author=interaction.user)
@@ -397,9 +405,8 @@ class Music(commands.Cog):
                 if voice is None or not voice.is_connected():
                     await channel.connect()
                 first = False
-                
-        await self.play_all_songs(interaction.guild)
 
+        await self.play_all_songs(interaction.guild)
 
     @app_commands.command(name='playlistshow', description='Show a playlist.')
     @app_commands.describe(playlist='playlist')
@@ -413,11 +420,11 @@ class Music(commands.Cog):
         for track in tracks:
             result += f'**{track}**\n'
         await interaction.response.send_message(result)
-        
+
     @app_commands.command(name='shuffle', description='Shuffle the current queue')
     async def shuffle(self, interaction: discord.Interaction):
         queue = self.music_queues[interaction.guild]
-        
+
         if not self.client_in_same_channel(interaction.user, interaction.guild):
             await interaction.response.send_message('You\'re not in a voice channel with me.')
             return
@@ -425,13 +432,10 @@ class Music(commands.Cog):
         if not queue:
             await interaction.response.send_message('I don\'t have anything in my queue right now.')
             return
-        
+
         result = random.sample(queue, len(queue))
         self.music_queues[interaction.guild] = result
         await interaction.response.send_message('Shuffled queue.')
-        
-        
-
 
     @commands.command()
     async def play(self, ctx: commands.Context, url: str, *args: str):
@@ -617,7 +621,8 @@ class Music(commands.Cog):
 
         to_send = f'```\n    {set_str_len("Song", 66)}{set_str_len("Uploader", 36)}Requested By\n'
 
-        for pos, song in enumerate(queue[:config.MUSIC_QUEUE_PER_PAGE * page], start=config.MUSIC_QUEUE_PER_PAGE * (page - 1)):
+        for pos, song in enumerate(queue[:config.MUSIC_QUEUE_PER_PAGE * page],
+                                   start=config.MUSIC_QUEUE_PER_PAGE * (page - 1)):
             title = set_str_len(song.title, 65)
             uploader = set_str_len(song.uploader, 35)
             to_send += f'{set_str_len(f"{pos + 1})", 4)}{title}|{uploader}|{song.requested_by.display_name}\n'
@@ -625,37 +630,38 @@ class Music(commands.Cog):
         await ctx.send(to_send + '```')
 
     async def play_all_songs(self, guild: discord.Guild):
+        path_counter = 0
         queue = self.music_queues.get(guild)
-        
+
         # Play next song until queue is empty
         while queue:
-
             song = queue.next_song()
-            await self.prepare_song(guild, song)
+            await self.prepare_next_song(guild, song)
             await self.wait_for_end_of_song(guild)
             await self.play_song_no_prepare(guild)
+            path_counter += 1
 
         # Disconnect after song queue is empty
         await self.inactivity_disconnect(guild)
 
-    async def prepare_song(self, guild: discord.Guild, song: Song):
+    async def prepare_next_song(self, guild: discord.Guild, song: Song, path_counter: int):
         '''Downloads a YouTube video's audio.'''
 
         audio_dir = os.path.join('.', 'audio')
-        audio_path = os.path.join(audio_dir, f'{guild.id}')
-        output_id = guild.id + 1
-        output_path = os.path.join(audio_dir, f'{output_id}')
+        audio_path = os.path.join(audio_dir, f'{guild.id + path_counter}')
+        old_audio_path = os.path.join(audio_dir, f'{guild.id + path_counter - 2}')
+        #output_id = guild.id + 1
+        #output_path = os.path.join(audio_dir, f'{output_id}')
 
         try:
-            os.remove(audio_path + '.opus')
+            os.remove(old_audio_path + '.opus')
         except:
             pass
 
-        try:
-            os.remove(output_path + '.opus')
-        except:
-            pass
-
+        #try:
+            #os.remove(output_path + '.opus')
+        #except:
+            #pass
 
         if song.url.startswith("https://open.spotify.com/"):
             args = {
@@ -709,17 +715,17 @@ class Music(commands.Cog):
 
     async def play_song(self, guild: discord.Guild, song: Song):
         '''Downloads and starts playing a YouTube video's audio.'''
-        
+
         audio_dir = os.path.join('.', 'audio')
         audio_path = os.path.join(audio_dir, f'{guild.id}')
         output_id = guild.id + 1
         output_path = os.path.join(audio_dir, f'{output_id}')
-        
+
         try:
             os.remove(audio_path + '.opus')
         except:
             pass
-        
+
         try:
             os.remove(output_path + '.opus')
         except:
@@ -734,11 +740,11 @@ class Music(commands.Cog):
                 'output': f'{audio_path}.opus'
             }
 
-            #todo read when spotdl is fixed
-            #spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
-            #try:
-                #spotdl_handler.download(song=song.url)
-            #except:
+            # todo read when spotdl is fixed
+            # spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
+            # try:
+            # spotdl_handler.download(song=song.url)
+            # except:
             #    await self.play_all_songs(guild)
             #    print('Error downloading spotify track. Skipping.')
             #    return
@@ -764,11 +770,10 @@ class Music(commands.Cog):
                     await self.play_all_songs(guild)
                     print('Error downloading track. Skipping.')
                     return
-        
+
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
         queue.clear_skip_votes()
-
 
     async def stream_song(self, guild: discord.Guild, song: str):
         '''Streams a YouTube video's audio into a VC.'''
@@ -778,12 +783,12 @@ class Music(commands.Cog):
         audio_path = os.path.join(audio_dir, f'{guild.id}')
         output_id = guild.id + 1
         output_path = os.path.join(audio_dir, f'{output_id}')
-        
+
         try:
             os.remove(audio_path + '.opus')
         except:
             pass
-        
+
         try:
             os.remove(output_path + '.opus')
         except:
@@ -811,19 +816,20 @@ class Music(commands.Cog):
                 await self.play_all_songs(guild)
                 print('Error downloading track. Skipping.')
                 return
-        
+
         # subprocess.run(['ffmpeg', '-i', os.path.abspath(audio_path) + '.opus', '-af', 'loudnorm=I=-16:LRA=11:TP=-1.5', os.path.abspath(output_path) + '.opus'])
         voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
         queue.clear_skip_votes()
 
-
     def search(query):
-        with yt_dlp.YoutubeDL({'format': 'bestaudio', 'noplaylist':'True'}) as ydl:
-            try: requests.get(query)
-            except: info = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
-            else: info = ydl.extract_info(query, download=False)
+        with yt_dlp.YoutubeDL({'format': 'bestaudio', 'noplaylist': 'True'}) as ydl:
+            try:
+                requests.get(query)
+            except:
+                info = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
+            else:
+                info = ydl.extract_info(query, download=False)
         return (info, info['formats'][0]['url'])
-
 
     async def wait_for_end_of_song(self, guild: discord.Guild):
         voice = get(self.bot.voice_clients, guild=guild)
@@ -860,4 +866,3 @@ class Music(commands.Cog):
 
 async def setup(client: commands.Bot) -> None:
     await client.add_cog(Music(client))
-    
