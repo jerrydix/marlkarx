@@ -2,6 +2,7 @@ import discord
 import yt_dlp
 from bot import config
 
+
 class Queue(list):
 
     def __init__(self, *args, **kwargs):
@@ -13,7 +14,6 @@ class Queue(list):
         # if list.count > 0:
         self._current_song = self.pop(0)
         return self._current_song
-        return None
 
     def clear(self):
         super().clear()
@@ -38,7 +38,7 @@ class Queue(list):
         if song_id <= 0:
             song = self.current_song
         else:
-            song = self[song_id-1]
+            song = self[song_id - 1]
 
         if len(song.description) > 300:
             song['description'] = f'{song.description[:300]}...'
@@ -48,11 +48,11 @@ class Queue(list):
         embed.add_field(name='Song', value=song.title, inline=True)
         embed.add_field(name='Uploader', value=song.uploader, inline=True)
         embed.add_field(name='Duration', value=song.duration_formatted, inline=True)
-        #embed.add_field(name='Description', value=song.description, inline=True)
+        # embed.add_field(name='Description', value=song.description, inline=True)
         embed.add_field(name='Upload Date', value=song.upload_date_formatted, inline=True)
         embed.add_field(name='Views', value=song.views, inline=True)
         embed.add_field(name='Likes', value=song.likes, inline=True)
-        #embed.add_field(name='Dislikes', value=song.dislikes, inline=True)
+        # embed.add_field(name='Dislikes', value=song.dislikes, inline=True)
         embed.add_field(name='Requested By', value=song.requested_by.display_name, inline=True)
 
         return embed
@@ -63,7 +63,6 @@ class SongRequestError(Exception):
 
 
 class Song(dict):
-
     ydl_opts = {
         'format': 'bestaudio/best',
         'noplaylist': True,
@@ -88,7 +87,6 @@ class Song(dict):
         self._thumbnail = None
         self._requested_by = None
 
-
         if url == '':
             self['requested_by'] = author
             return
@@ -96,7 +94,7 @@ class Song(dict):
         if not url.startswith("https://open.spotify.com/"):
             self.download_info(url, author)
 
-        if self.duration_raw > config.MUSIC_MAX_DURATION_MINS*60:
+        if self.duration_raw > config.MUSIC_MAX_DURATION_MINS * 60:
             raise SongRequestError(f'Your song was too long, keep it under {config.MUSIC_MAX_DURATION_MINS}mins')
         elif self.get('is_live', True):
             raise SongRequestError('Invalid video - either live stream or unsupported website.')

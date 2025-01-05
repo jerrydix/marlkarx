@@ -629,14 +629,83 @@ class Music(commands.Cog):
         
         # Play next song until queue is empty
         while queue:
-            await self.wait_for_end_of_song(guild)
-            song = queue.next_song()
 
-            # if int(queue.count) > 0:
-            await self.play_song(guild, song)
+            song = queue.next_song()
+            await self.prepare_song(guild, song)
+            await self.wait_for_end_of_song(guild)
+            await self.play_song_no_prepare(guild)
 
         # Disconnect after song queue is empty
         await self.inactivity_disconnect(guild)
+
+    async def prepare_song(self, guild: discord.Guild, song: Song):
+        '''Downloads a YouTube video's audio.'''
+
+        audio_dir = os.path.join('.', 'audio')
+        audio_path = os.path.join(audio_dir, f'{guild.id}')
+        output_id = guild.id + 1
+        output_path = os.path.join(audio_dir, f'{output_id}')
+
+        try:
+            os.remove(audio_path + '.opus')
+        except:
+            pass
+
+        try:
+            os.remove(output_path + '.opus')
+        except:
+            pass
+
+
+        if song.url.startswith("https://open.spotify.com/"):
+            args = {
+                'format': 'opus',
+                'output': f'{audio_path}.opus'
+            }
+
+            # todo read when spotdl is fixed
+            # spotdl_handler = spotdl.Spotdl(client_id="97e419839f4045c9bbc7a704f8238160", client_secret="7973e7cfe90c42b3bed873ee0e66df15",downloader_settings=args)
+            # try:
+            # spotdl_handler.download(song=song.url)
+            # except:
+            #    await self.play_all_songs(guild)
+            #    print('Error downloading spotify track. Skipping.')
+            #    return
+
+        else:
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'noplaylist': True,
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'opus',
+                    'preferredquality': '192',
+                }],
+                'outtmpl': audio_path
+            }
+
+            Path(audio_dir).mkdir(parents=True, exist_ok=True)
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                try:
+                    ydl.download([f'{song.url}'])
+                except:
+                    await self.play_all_songs(guild)
+                    print('Error downloading track. Skipping.')
+                    return
+
+        print('Finished preparing ' + os.path.abspath(audio_path) + '.opus')
+
+    async def play_song_no_prepare(self, guild: discord.Guild):
+
+        audio_dir = os.path.join('.', 'audio')
+        audio_path = os.path.join(audio_dir, f'{guild.id}')
+
+        voice = get(self.bot.voice_clients, guild=guild)
+        queue = self.music_queues.get(guild)
+
+        voice.play(discord.FFmpegPCMAudio(os.path.abspath(audio_path) + '.opus'))
+        queue.clear_skip_votes()
 
     async def play_song(self, guild: discord.Guild, song: Song):
         '''Downloads and starts playing a YouTube video's audio.'''
