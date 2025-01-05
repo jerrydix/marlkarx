@@ -636,7 +636,7 @@ class Music(commands.Cog):
         # Play next song until queue is empty
         while queue:
             song = queue.next_song()
-            await self.prepare_next_song(guild, song)
+            await self.prepare_next_song(guild, song, path_counter)
             await self.wait_for_end_of_song(guild)
             await self.play_song_no_prepare(guild)
             path_counter += 1
