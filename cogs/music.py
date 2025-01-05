@@ -28,9 +28,7 @@ def set_str_len(s: str, length: int):
 
 
 playlists = []
-paused = False;
-prefetched_song = None
-
+paused = False
 
 class Music(commands.Cog):
 
@@ -231,16 +229,13 @@ class Music(commands.Cog):
     @app_commands.command(name='queue', description='Marl Karx shows the current track queue')
     async def queueview(self, interaction: discord.Interaction):
         queue = self.music_queues.get(interaction.guild)
-        queue_list = list(queue)
-        if prefetched_song is not None:
-            queue_list.insert(0, prefetched_song)
 
-        if not queue_list:
+        if not queue:
             await interaction.response.send_message('I don\'t have anything in my queue right now.')
             return
 
         view = QueueView()
-        view.data = queue_list
+        view.data = queue
         await view.send(interaction)
 
     @app_commands.command(name='pause', description='Pause the currently playing track')
@@ -639,10 +634,10 @@ class Music(commands.Cog):
 
         # Play next song until queue is empty
         while queue:
-            song = queue.next_song()
-            prefetched_song = song
+            song = queue.next_song_no_pop()
             await self.prepare_next_song(guild, song, path_counter)
             await self.wait_for_end_of_song(guild)
+            queue.next_song()
             await self.play_song_no_prepare(guild, path_counter)
             print('Playing ' + song.title)
             path_counter += 1
