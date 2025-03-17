@@ -155,9 +155,9 @@ def calculate_jerrimeter(measure: str, message: discord.Message):
     if measure == "cm":
         jm = number / 23
     elif measure == "m":
-        jm = number / 0.023
+        jm = number / 0.23
     elif measure == "km":
-        jm = number / 0.000023
+        jm = number / 0.00023
     elif measure == "dm":
         jm = number / 2.3
     elif measure == "mm":
