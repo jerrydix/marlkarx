@@ -640,18 +640,21 @@ class Music(commands.Cog):
             await self.wait_for_end_of_song(guild)
             print('Finished playing song (or start)')
             if next_song is not None:
+                print('PLAY next song')
                 self.delete_old_audio(guild, path_counter)
                 song = queue.next_song()
                 await self.play_song_no_prepare(guild, path_counter)
                 print('Playing ' + song.title)
 
             else:
+                print('PLAY first song')
                 song = queue.next_song()
                 await self.play_song(guild, song)
                 print('Playing ' + song.title)
 
             path_counter += 1
             if queue:
+                print("PREP next song")
                 next_song = queue.next_song_no_pop()
                 await self.prepare_next_song(guild, song, path_counter)
 
