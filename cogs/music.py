@@ -81,6 +81,7 @@ class Music(commands.Cog):
         await interaction.followup.send(f'Queued track: **{song.title}**')
 
         if voice is None or not voice.is_connected():
+            # todo remove all audio files from audio dir
             await channel.connect()
 
         await self.play_all_songs(interaction.guild)
@@ -632,32 +633,52 @@ class Music(commands.Cog):
         path_counter = 0
         queue = self.music_queues.get(guild)
 
+        next_song = None
+
         # Play next song until queue is empty
         while queue:
-            song = queue.next_song_no_pop()
-            await self.prepare_next_song(guild, song, path_counter)
             await self.wait_for_end_of_song(guild)
-            queue.next_song()
-            await self.play_song_no_prepare(guild, path_counter)
-            print('Playing ' + song.title)
+            print('Finished playing song (or start)')
+            if next_song is not None:
+                self.delete_old_audio(guild, path_counter)
+                song = queue.next_song()
+                await self.play_song_no_prepare(guild, path_counter)
+                print('Playing ' + song.title)
+
+            else:
+                song = queue.next_song()
+                await self.play_song(guild, song)
+                print('Playing ' + song.title)
+
             path_counter += 1
+            if queue:
+                next_song = queue.next_song_no_pop()
+                await self.prepare_next_song(guild, song, path_counter)
 
         # Disconnect after song queue is empty
         await self.inactivity_disconnect(guild)
+
+    async def wait_for_end_of_song(self, guild: discord.Guild):
+        voice = get(self.bot.voice_clients, guild=guild)
+        global paused
+        while voice.is_playing() or paused:
+            await asyncio.sleep(1)
+
+    def delete_old_audio(self, guild: discord.Guild, path_counter: int):
+        audio_dir = os.path.join('.', 'audio')
+        old_audio_path = os.path.join(audio_dir, f'{guild.id + path_counter}')
+        try:
+            os.remove(old_audio_path + '.opus')
+        except:
+            pass
 
     async def prepare_next_song(self, guild: discord.Guild, song: Song, path_counter: int):
         '''Downloads a YouTube video's audio.'''
 
         audio_dir = os.path.join('.', 'audio')
         audio_path = os.path.join(audio_dir, f'{guild.id + path_counter}')
-        old_audio_path = os.path.join(audio_dir, f'{guild.id + path_counter - 2}')
         #output_id = guild.id + 1
         #output_path = os.path.join(audio_dir, f'{output_id}')
-
-        try:
-            os.remove(old_audio_path + '.opus')
-        except:
-            pass
 
         #try:
             #os.remove(output_path + '.opus')
@@ -831,12 +852,6 @@ class Music(commands.Cog):
             else:
                 info = ydl.extract_info(query, download=False)
         return (info, info['formats'][0]['url'])
-
-    async def wait_for_end_of_song(self, guild: discord.Guild):
-        voice = get(self.bot.voice_clients, guild=guild)
-        global paused
-        while voice.is_playing() or paused:
-            await asyncio.sleep(1)
 
     async def inactivity_disconnect(self, guild: discord.Guild):
         '''If a song is not played for 5 minutes, automatically disconnects bot from server.'''
