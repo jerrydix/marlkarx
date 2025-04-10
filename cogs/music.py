@@ -910,6 +910,7 @@ class Music(commands.Cog):
         with YoutubeDL(ydl_opts) as ydl:
             try:
                 info = ydl.extract_info(url, download=False)
+                print(info)
                 return info.get('_type') == 'playlist'
             except Exception as e:
                 print(f"Error: {e}")
