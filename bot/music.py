@@ -70,6 +70,7 @@ class Song(dict):
     ydl_opts = {
         'format': 'bestaudio/best',
         'noplaylist': True,
+        'quiet': True,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -77,19 +78,23 @@ class Song(dict):
         }],
     }
 
-    def __init__(self, url: str, author: discord.Member):
+    def __init__(self, url: str, author: discord.Member, *args, **kwargs):
         super().__init__()
-        self._url = None
-        self._title = None
-        self._uploader = None
-        self._duration_raw = None
-        self._description = None
-        self._upload_date_raw = None
-        self._views = None
-        self._likes = None
-        self._dislikes = None
-        self._thumbnail = None
+        self._url = args[0] if args else None
+        self._title = args[1] if len(args) > 1 else None
+        self._uploader = args[2] if len(args) > 2 else None
+        self._duration_raw = args[3] if len(args) > 3 else None
+        self._description = args[4] if len(args) > 4 else None
+        self._upload_date_raw = args[5] if len(args) > 5 else None
+        self._views = args[6] if len(args) > 6 else None
+        self._likes = args[7] if len(args) > 7 else None
+        self._dislikes = args[8] if len(args) > 8 else None
+        self._thumbnail = args[9] if len(args) > 9 else None
         self._requested_by = None
+
+        if args:
+            self['requested_by'] = author
+            return
 
         if url == '':
             self['requested_by'] = author

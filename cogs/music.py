@@ -14,6 +14,7 @@ from discord.ext import commands
 from discord.utils import get
 from pathlib import Path
 import requests
+from yt_dlp import YoutubeDL
 
 from bot import config
 from bot.music import Queue, Song, SongRequestError
@@ -62,7 +63,7 @@ class Music(commands.Cog):
 
         if prompt == '' and voice.is_paused() and paused:
             voice.resume()
-            paused = False;
+            paused = False
             await interaction.followup.send('Resumed track.')
             return
         elif prompt == '':
@@ -70,6 +71,11 @@ class Music(commands.Cog):
 
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
+
+        if self.is_youtube_playlist(prompt):
+            # todo handle youtube playlists
+            await interaction.followup.send('YouTube playlists are not supported yet.')
+            return
 
         try:
             song = Song(prompt, author=interaction.user)
@@ -717,6 +723,7 @@ class Music(commands.Cog):
             ydl_opts = {
                 'format': 'bestaudio/best',
                 'noplaylist': True,
+                'quiet': True,
                 'postprocessors': [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'opus',
@@ -788,6 +795,7 @@ class Music(commands.Cog):
             ydl_opts = {
                 'format': 'bestaudio/best',
                 'noplaylist': True,
+                'quiet': True,
                 'postprocessors': [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'opus',
@@ -834,6 +842,7 @@ class Music(commands.Cog):
         ydl_opts = {
             'format': 'bestaudio/best',
             'noplaylist': True,
+            'quiet': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'opus',
@@ -891,6 +900,20 @@ class Music(commands.Cog):
             return False
 
         return voice is not None and voice.is_connected() and channel == voice.channel
+
+    def is_youtube_playlist(self, url: str) -> bool:
+        ydl_opts = {
+            'quiet': True,
+            'extract_flat': True,
+        }
+
+        with YoutubeDL(ydl_opts) as ydl:
+            try:
+                info = ydl.extract_info(self, download=False)
+                return info.get('_type') == 'playlist'
+            except Exception as e:
+                print(f"Error: {e}")
+                return False
 
 
 async def setup(client: commands.Bot) -> None:
