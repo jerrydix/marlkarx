@@ -232,18 +232,10 @@ class Song(dict):
 
     def download_info(self, url: str, author: discord.Member):
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            if 'entries' in info:
-                info = info['entries'][0]
+            self.update(ydl.extract_info(url, download=False))
+
+            if not url.startswith('https'):
+                self.update(ydl.extract_info(self['entries'][0]['webpage_url'], download=False))
 
             self['url'] = url
             self['requested_by'] = author
-            self['title'] = info.get('title', 'Unable To Fetch')
-            self['uploader'] = info.get('uploader', 'Unable To Fetch')
-            self['duration'] = info.get('duration', 0)
-            self['description'] = info.get('description', 'Unable To Fetch')
-            self['upload_date'] = info.get('upload_date', '01011970')
-            self['view_count'] = info.get('view_count', 0)
-            self['like_count'] = info.get('like_count', 0)
-            self['dislike_count'] = info.get('dislike_count', 0)
-            self['thumbnail'] = info.get('thumbnail', 'http://i.imgur.com/dDTCO6e.png')
