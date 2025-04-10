@@ -73,7 +73,8 @@ class Music(commands.Cog):
             prompt = f'ytsearch1:{prompt}'
 
         if 'list=' in prompt:
-            songs = self.extract_playlist_songs(prompt)
+            info = self.extract_playlist_info(prompt)
+            songs = info['entries']
             if not songs:
                 await interaction.followup.send('Playlist is empty or invalid.')
                 return
@@ -90,7 +91,7 @@ class Music(commands.Cog):
                     await interaction.followup.send(e.args[0])
                     return
                 music_queue.append(song)
-            await interaction.followup.send(f'Queued playlist')
+            await interaction.followup.send(f'Queued playlist: **{info["title"]}**')
         else:
             try:
                 song = Song(prompt, author=interaction.user)
@@ -322,6 +323,74 @@ class Music(commands.Cog):
             data['playlists'].append(list_obj)
             json.dump(data, c)
             c.close()
+
+    @app_commands.command(name='createplaylistfromurl', description='Create a new playlist from a playlist url')
+    @app_commands.describe(name='name', url='url')
+    async def createplaylistfromurl(self, interaction: discord.Interaction, name: str, url: str):
+        global playlists
+        if 'playlists' in data and len(data['playlists']) < 10:
+            for list in data['playlists']:
+                if list['name'] == name:
+                    await interaction.response.send_message(
+                        'This playlist already exits. Can\'t add playlist with same name twice.')
+                    return
+            c = open('config.json', 'w')
+            list_obj = {'name': name, 'tracks': []}
+            json.dumps(list_obj)
+            data['playlists'].append(list_obj)
+            json.dump(data, c)
+            c.close()
+            playlists = []
+            i = 0
+            while i < len(data['playlists']):
+                playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
+                i += 1
+            await interaction.response.send_message(f'Added playlist **{name}**')
+
+        elif 'playlists' in data:
+            await interaction.response.send_message('Cannot add more than 10 playlists.')
+            return
+        else:
+            c = open('config.json', 'w')
+            # playlists = {}
+            info = self.extract_playlist_info(url)
+            songs = info['entries']
+            if not songs:
+                await interaction.response.send_message('Playlist is empty or invalid.')
+                return
+
+            list_obj = {'name': name, 'tracks': []}
+            for song in songs:
+                try:
+                    song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
+                                uploader=song['uploader'], duration_raw=song['duration'],
+                                description=song['description'],
+                                upload_date_raw=song['upload_date'],
+                                views=song['view_count'],
+                                likes=song['like_count'], thumbnail=song['thumbnail'])
+                    song_dict = dict(url=song.url, title=song.title, uploader=song.uploader,
+                                     duration_raw=song.duration_raw,
+                                     duration_formatted=song.duration_formatted, description=song.description,
+                                     upload_date_raw=song.upload_date_raw,
+                                     upload_date_formatted=song.upload_date_formatted,
+                                     views=song.views, likes=song.likes, dislikes=song.dislikes,
+                                     thumbnail=song.thumbnail,
+                                     requested_by="")
+                    list_obj['tracks'].append(song_dict)
+                except SongRequestError as e:
+                    await interaction.response.send_message(e.args[0])
+                    return
+
+            json.dumps(list_obj)
+            data['playlists'].append(list_obj)
+            json.dump(data, c)
+            c.close()
+            playlists = []
+            i = 0
+            while i < len(data['playlists']):
+                playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
+                i += 1
+            await interaction.response.send_message(f'Added playlist **{name}** from YT playlist')
 
     @app_commands.command(name='playlistadd', description='Add a track to a playlist')
     @app_commands.describe(playlist='playlist')
@@ -916,7 +985,7 @@ class Music(commands.Cog):
 
         return voice is not None and voice.is_connected() and channel == voice.channel
 
-    def extract_playlist_songs(self, url: str):
+    def extract_playlist_info(self, url: str):
         ydl_opts = {
             'quiet': False,
             'extract_flat': False,
@@ -925,11 +994,12 @@ class Music(commands.Cog):
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-
             if 'entries' in info:
-                return info['entries']
+                return info
             else:
                 return None
+
+
 
 async def setup(client: commands.Bot) -> None:
     await client.add_cog(Music(client))
