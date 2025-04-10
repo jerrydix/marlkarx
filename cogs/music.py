@@ -130,7 +130,7 @@ class Music(commands.Cog):
         if len(queue.skip_voters) >= required_votes:
             await interaction.response.send_message('Skipping track after successful vote.')
             global paused
-            paused = False;
+            paused = False
             voice.stop()
         else:
             await interaction.response.send_message(
@@ -149,6 +149,8 @@ class Music(commands.Cog):
         elif voice is None or not voice.is_playing():
             await interaction.response.send_message('I\'m not playing a track right now.')
         else:
+            global paused
+            paused = False
             voice.stop()
             await interaction.response.send_message('Skipped track.')
 
@@ -641,7 +643,7 @@ class Music(commands.Cog):
             print('Finished playing song (or start)')
             if next_song is not None:
                 print('PLAY next song')
-                self.delete_old_audio(guild, path_counter)
+                self.delete_old_audio(guild, path_counter - 1)
                 song = queue.next_song()
                 await self.play_song_no_prepare(guild, path_counter)
                 print('Playing ' + song.title)
