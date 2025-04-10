@@ -72,9 +72,23 @@ class Music(commands.Cog):
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
-        if self.is_youtube_playlist(url=prompt):
-            # todo handle youtube playlists
-            await interaction.followup.send('YouTube playlists are not supported yet.')
+        if 'list=' in prompt:
+            songs = self.extract_playlist_songs(prompt)
+            if not songs:
+                await interaction.followup.send('Playlist is empty or invalid.')
+                return
+            for song in songs:
+                try:
+                    song = Song(url=song['url'], author=interaction.user, title=song['title'],
+                                uploader=song['uploader'], duration_raw=song['duration_raw'],
+                                description=song['description'],
+                                upload_date_raw=song['upload_date_raw'],
+                                views=song['views'],
+                                likes=song['likes'], dislikes=song['dislikes'], thumbnail=song['thumbnail'])
+                except SongRequestError as e:
+                    await interaction.followup.send(e.args[0])
+                    return
+                music_queue.append(song)
             return
 
         print("Is not playlist")
@@ -902,20 +916,20 @@ class Music(commands.Cog):
 
         return voice is not None and voice.is_connected() and channel == voice.channel
 
-    def is_youtube_playlist(self, url: str) -> bool:
+    def extract_playlist_songs(self, url: str):
         ydl_opts = {
-            'extract_flat': True,
+            'quiet': False,
+            'extract_flat': False,
+            'skip_download': True
         }
 
-        with YoutubeDL(ydl_opts) as ydl:
-            try:
-                info = ydl.extract_info(url, download=False)
-                print(info)
-                return info.get('_type') == 'playlist'
-            except Exception as e:
-                print(f"Error: {e}")
-                return False
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
 
+            if 'entries' in info:
+                return info['entries']
+            else:
+                return [info]
 
 async def setup(client: commands.Bot) -> None:
     await client.add_cog(Music(client))
