@@ -77,6 +77,7 @@ class Music(commands.Cog):
             await interaction.followup.send('YouTube playlists are not supported yet.')
             return
 
+        print("Is not playlist")
         try:
             song = Song(prompt, author=interaction.user)
         except SongRequestError as e:
