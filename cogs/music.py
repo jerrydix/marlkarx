@@ -78,6 +78,7 @@ class Music(commands.Cog):
                 await interaction.followup.send('Playlist is empty or invalid.')
                 return
             for song in songs:
+                print(song)
                 try:
                     song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
                                 uploader=song['uploader'], duration_raw=song['duration_raw'],
