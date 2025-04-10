@@ -233,9 +233,8 @@ class Song(dict):
     def download_info(self, url: str, author: discord.Member):
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-
-            if not url.startswith('https'):
-                info = ydl.extract_info(self['entries'][0]['webpage_url'], download=False)
+            if 'entries' in info:
+                info = info['entries'][0]
 
             self['url'] = url
             self['requested_by'] = author
