@@ -904,7 +904,6 @@ class Music(commands.Cog):
 
     def is_youtube_playlist(self, url: str) -> bool:
         ydl_opts = {
-            'quiet': True,
             'extract_flat': True,
         }
 
