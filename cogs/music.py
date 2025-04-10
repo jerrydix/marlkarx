@@ -79,7 +79,7 @@ class Music(commands.Cog):
                 return
             for song in songs:
                 try:
-                    song = Song(url=song['url'], author=interaction.user, title=song['title'],
+                    song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
                                 uploader=song['uploader'], duration_raw=song['duration_raw'],
                                 description=song['description'],
                                 upload_date_raw=song['upload_date_raw'],
@@ -929,7 +929,7 @@ class Music(commands.Cog):
             if 'entries' in info:
                 return info['entries']
             else:
-                return [info]
+                return None
 
 async def setup(client: commands.Bot) -> None:
     await client.add_cog(Music(client))
