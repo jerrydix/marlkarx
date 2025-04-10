@@ -223,7 +223,7 @@ class Music(commands.Cog):
     async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
         queue = self.music_queues.get(interaction.guild)
 
-        if queue.empty():
+        if queue is None:
             await interaction.response.send_message('I don\'t have anything playing right now.')
             return
 
