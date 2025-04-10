@@ -72,7 +72,7 @@ class Music(commands.Cog):
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
-        if self.is_youtube_playlist(prompt):
+        if self.is_youtube_playlist(url=prompt):
             # todo handle youtube playlists
             await interaction.followup.send('YouTube playlists are not supported yet.')
             return
