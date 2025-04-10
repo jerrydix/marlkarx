@@ -81,9 +81,9 @@ class Music(commands.Cog):
                 print(song)
                 try:
                     song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
-                                uploader=song['uploader'], duration_raw=song['duration_raw'],
+                                uploader=song['uploader'], duration_raw=song['duration'],
                                 description=song['description'],
-                                upload_date_raw=song['upload_date_raw'],
+                                upload_date_raw=song['upload_date'],
                                 views=song['views'],
                                 likes=song['likes'], dislikes=song['dislikes'], thumbnail=song['thumbnail'])
                 except SongRequestError as e:
