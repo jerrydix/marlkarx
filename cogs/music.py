@@ -223,6 +223,10 @@ class Music(commands.Cog):
     async def nowplaying(self, interaction: discord.Interaction, index: int = 0):
         queue = self.music_queues.get(interaction.guild)
 
+        if queue.empty():
+            await interaction.response.send_message('I don\'t have anything playing right now.')
+            return
+
         if index not in range(len(queue) + 1):
             return interaction.followup.send('A track does not exist at that index in the queue.')
 
@@ -646,13 +650,13 @@ class Music(commands.Cog):
                 self.delete_old_audio(guild, path_counter - 1)
                 song = queue.next_song()
                 await self.play_song_no_prepare(guild, path_counter)
-                print('Playing ' + song.title)
+                print('PLAYING ' + song.title)
 
             else:
                 print('PLAY first song')
                 song = queue.next_song()
                 await self.play_song(guild, song)
-                print('Playing ' + song.title)
+                print('PLAYING ' + song.title)
 
             path_counter += 1
             if queue:
