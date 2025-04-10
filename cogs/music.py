@@ -78,8 +78,8 @@ class Music(commands.Cog):
                 await interaction.followup.send('Playlist is empty or invalid.')
                 return
             for song in songs:
-                print(song)
                 try:
+                    print("Adding song to queue")
                     song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
                                 uploader=song['uploader'], duration_raw=song['duration'],
                                 description=song['description'],
@@ -90,17 +90,16 @@ class Music(commands.Cog):
                     await interaction.followup.send(e.args[0])
                     return
                 music_queue.append(song)
-            return
+            await interaction.followup.send(f'Queued playlist')
+        else:
+            try:
+                song = Song(prompt, author=interaction.user)
+            except SongRequestError as e:
+                await interaction.followup.send(e.args[0])
+                return
 
-        print("Is not playlist")
-        try:
-            song = Song(prompt, author=interaction.user)
-        except SongRequestError as e:
-            await interaction.followup.send(e.args[0])
-            return
-
-        music_queue.append(song)
-        await interaction.followup.send(f'Queued track: **{song.title}**')
+            music_queue.append(song)
+            await interaction.followup.send(f'Queued track: **{song.title}**')
 
         if voice is None or not voice.is_connected():
             # todo remove all audio files from audio dir
