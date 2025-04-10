@@ -84,8 +84,8 @@ class Music(commands.Cog):
                                 uploader=song['uploader'], duration_raw=song['duration'],
                                 description=song['description'],
                                 upload_date_raw=song['upload_date'],
-                                views=song['views'],
-                                likes=song['likes'], dislikes=song['dislikes'], thumbnail=song['thumbnail'])
+                                views=song['view_count'],
+                                likes=song['like_count'], dislikes=song['dislike_count'], thumbnail=song['thumbnail'])
                 except SongRequestError as e:
                     await interaction.followup.send(e.args[0])
                     return
