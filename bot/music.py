@@ -83,12 +83,12 @@ class Song(dict):
         self._url = url
         self._title = kwargs.get('title', None)
         self._uploader = kwargs.get('uploader', None)
-        self._duration_raw = kwargs.get('duration_raw', 0)
+        self._duration_raw = kwargs.get('duration_raw', None)
         self._description = kwargs.get('description', None)
-        self._upload_date_raw = kwargs.get('upload_date_raw', '01011970')
-        self._views = kwargs.get('views', 0)
-        self._likes = kwargs.get('likes', 0)
-        self._dislikes = kwargs.get('dislikes', 0)
+        self._upload_date_raw = kwargs.get('upload_date_raw', None)
+        self._views = kwargs.get('views', None)
+        self._likes = kwargs.get('likes', None)
+        self._dislikes = kwargs.get('dislikes', None)
         self._thumbnail = kwargs.get('thumbnail', None)
         self._requested_by = None
 
