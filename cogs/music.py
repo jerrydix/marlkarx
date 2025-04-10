@@ -335,24 +335,6 @@ class Music(commands.Cog):
                         'This playlist already exits. Can\'t add playlist with same name twice.')
                     return
             c = open('config.json', 'w')
-            list_obj = {'name': name, 'tracks': []}
-            json.dumps(list_obj)
-            data['playlists'].append(list_obj)
-            json.dump(data, c)
-            c.close()
-            playlists = []
-            i = 0
-            while i < len(data['playlists']):
-                playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
-                i += 1
-            await interaction.response.send_message(f'Added playlist **{name}**')
-
-        elif 'playlists' in data:
-            await interaction.response.send_message('Cannot add more than 10 playlists.')
-            return
-        else:
-            c = open('config.json', 'w')
-            # playlists = {}
             info = self.extract_playlist_info(url)
             songs = info['entries']
             if not songs:
@@ -391,6 +373,10 @@ class Music(commands.Cog):
                 playlists.append(discord.app_commands.Choice(name=data['playlists'][i]['name'], value=i))
                 i += 1
             await interaction.response.send_message(f'Added playlist **{name}** from YT playlist')
+
+        elif 'playlists' in data:
+            await interaction.response.send_message('Cannot add more than 10 playlists.')
+            return
 
     @app_commands.command(name='playlistadd', description='Add a track to a playlist')
     @app_commands.describe(playlist='playlist')
