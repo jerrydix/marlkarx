@@ -17,8 +17,7 @@ class Queue(list):
 
     def next_song_no_pop(self):
         # if list.count > 0:
-        self._current_song = self[0]
-        return self._current_song
+        return self[0]
 
     def clear(self):
         super().clear()

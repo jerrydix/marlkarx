@@ -735,7 +735,7 @@ class Music(commands.Cog):
                     print('Error downloading track. Skipping.')
                     return
 
-        print('Finished preparing ' + os.path.abspath(audio_path) + '.opus')
+        print('FINISHED PREPARING ' + os.path.abspath(audio_path) + '.opus')
 
     async def play_song_no_prepare(self, guild: discord.Guild, path_counter: int):
 
