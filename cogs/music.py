@@ -212,6 +212,10 @@ class Music(commands.Cog):
     async def song_info(self, interaction: discord.Interaction, index: int = 0):
         queue = self.music_queues.get(interaction.guild)
 
+        if queue is None:
+            await interaction.response.send_message('I don\'t have anything playing right now.')
+            return
+
         if index not in range(len(queue) + 1):
             return interaction.followup.send('A track does not exist at that index in the queue.')
 
