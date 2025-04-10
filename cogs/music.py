@@ -666,7 +666,7 @@ class Music(commands.Cog):
             if queue:
                 print("PREP next song")
                 next_song = queue.next_song_no_pop()
-                await self.prepare_next_song(guild, song, path_counter)
+                await self.prepare_next_song(guild, next_song, path_counter)
 
         # Disconnect after song queue is empty
         await self.inactivity_disconnect(guild)
