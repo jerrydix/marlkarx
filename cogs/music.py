@@ -81,12 +81,10 @@ class Music(commands.Cog):
             for song in songs:
                 try:
                     print("Adding song to queue")
-                    song = Song(url=song['webpage_url'], author=interaction.user, title=song['title'],
+                    song = Song(url=song['url'], author=interaction.user, title=song['title'],
                                 uploader=song['uploader'], duration_raw=song['duration'],
                                 description=song['description'],
-                                upload_date_raw=song['upload_date'],
-                                views=song['view_count'],
-                                likes=song['like_count'], thumbnail=song['thumbnail'])
+                                views=song['view_count'], thumbnail=song['thumbnails'][0]['url'])
                 except SongRequestError as e:
                     await interaction.followup.send(e.args[0])
                     return
