@@ -80,7 +80,6 @@ class Music(commands.Cog):
                 return
             for song in songs:
                 try:
-                    print("Adding song to queue")
                     song = Song(url=song['url'], author=interaction.user, title=song['title'],
                                 uploader=song['uploader'], duration_raw=song['duration'],
                                 description=song['description'],
@@ -958,17 +957,18 @@ class Music(commands.Cog):
         return voice is not None and voice.is_connected() and channel == voice.channel
 
     def extract_playlist_info(self, url: str):
+        print('EXTRACTING playlist info')
         ydl_opts = {
             'quiet': True,
-            'extract_flat': True,  # Only get metadata, no deep extraction
+            'extract_flat': True,
             'skip_download': True,
             'force_generic_extractor': False
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+            print('EXTRACTED playlist info')
             if 'entries' in info:
-                print(info)
                 return info
             else:
                 return None
