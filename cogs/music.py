@@ -961,9 +961,10 @@ class Music(commands.Cog):
 
     def extract_playlist_info(self, url: str):
         ydl_opts = {
-            'quiet': False,
-            'extract_flat': False,
-            'skip_download': True
+            'quiet': True,
+            'extract_flat': True,  # Only get metadata, no deep extraction
+            'skip_download': True,
+            'force_generic_extractor': False
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
