@@ -1,7 +1,6 @@
 import asyncio
 import os
 
-# import spotdl
 import validators
 import random
 from collections import defaultdict
@@ -21,6 +20,12 @@ from bot.music import Queue, Song, SongRequestError
 from pagination import QueueView
 from cogs.core import data
 
+from spotdl import Spotdl
+from spotdl.types.song import Song
+
+spotdl_handler = Spotdl("97e419839f4045c9bbc7a704f8238160", "7973e7cfe90c42b3bed873ee0e66df15")
+
+
 
 def set_str_len(s: str, length: int):
     '''Adds whitespace or trims string to enforce a specific size'''
@@ -31,8 +36,47 @@ def set_str_len(s: str, length: int):
 playlists = []
 paused = False
 
-class Music(commands.Cog):
 
+def extract_playlist_info(url: str):
+    print('EXTRACTING playlist info')
+    ydl_opts = {
+        'quiet': True,
+        'extract_flat': True,
+        'skip_download': True,
+        'force_generic_extractor': False
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        print('EXTRACTED playlist info')
+        if 'entries' in info:
+            return info
+        else:
+            return None
+
+
+async def spotify_to_youtube_data(url: str):
+    songs: list[Song] = spotdl_handler.search([url])
+
+    results = []
+
+    for song in songs:
+
+        youtube_url = spotdl_handler.get_download_urls([song])[0]  # returns list, we take the first
+
+        results.append({
+            "name": song.name,
+            "artists": ", ".join(song.artists),
+            "url": youtube_url,
+            "duration": song.duration,
+            "thumbnail": song.cover_url,
+            "date": song.date
+        })
+
+    return results
+
+
+class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.music_queues = defaultdict(Queue)
@@ -72,8 +116,26 @@ class Music(commands.Cog):
         if not validators.url(prompt):
             prompt = f'ytsearch1:{prompt}'
 
-        if 'list=' in prompt:
-            info = self.extract_playlist_info(prompt)
+        if prompt.startswith("https://open.spotify.com/"):
+            # Spotify URL
+            info = await spotify_to_youtube_data(prompt)
+            if not info:
+                await interaction.followup.send('Playlist is empty or invalid.')
+                return
+            for song in info:
+                try:
+                    song = Song(url=song['url'], author=interaction.user, title=song['name'],
+                                uploader=song['artists'], duration_raw=song['duration'],
+                                description='',
+                                views='', thumbnail=song['thumbnail'])
+                except SongRequestError as e:
+                    await interaction.followup.send(e.args[0])
+                    return
+                music_queue.append(song)
+            await interaction.followup.send(f'Queued Spotify playlist')
+
+        elif 'list=' in prompt:
+            info = extract_playlist_info(prompt)
             songs = info['entries']
             if not songs:
                 await interaction.followup.send('Playlist is empty or invalid.')
@@ -300,7 +362,7 @@ class Music(commands.Cog):
             list_obj = {'name': name, 'tracks': []}
 
             if validators.url(url) and url is not '' and 'list=' in url:
-                info = self.extract_playlist_info(url)
+                info = extract_playlist_info(url)
                 songs = info['entries']
 
                 name = info['title']
@@ -955,24 +1017,6 @@ class Music(commands.Cog):
             return False
 
         return voice is not None and voice.is_connected() and channel == voice.channel
-
-    def extract_playlist_info(self, url: str):
-        print('EXTRACTING playlist info')
-        ydl_opts = {
-            'quiet': True,
-            'extract_flat': True,
-            'skip_download': True,
-            'force_generic_extractor': False
-        }
-
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            print('EXTRACTED playlist info')
-            if 'entries' in info:
-                return info
-            else:
-                return None
-
 
 
 async def setup(client: commands.Bot) -> None:
