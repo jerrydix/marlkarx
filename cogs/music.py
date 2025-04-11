@@ -21,7 +21,7 @@ from pagination import QueueView
 from cogs.core import data
 
 from spotdl import Spotdl
-from spotdl.types.song import Song
+from spotdl.types.song import Song as SpotdlSong
 
 spotdl_handler = Spotdl("97e419839f4045c9bbc7a704f8238160", "7973e7cfe90c42b3bed873ee0e66df15")
 
@@ -56,7 +56,7 @@ def extract_playlist_info(url: str):
 
 
 async def spotify_to_youtube_data(url: str):
-    songs: list[Song] = spotdl_handler.search([url])
+    songs: list[SpotdlSong] = spotdl_handler.search([url])
 
     results = []
 
