@@ -4,7 +4,7 @@ A simple Discord.py bot that has neat unique features and music functionality
 
 The Bot is currently only optimized to run on my friend's server, but you can use most of the features on your own server, too.
 
-This bot supports slash commands and can be used as a music bot.
+This bot supports slash commands and has music bot capabilities.
 
 ## Setup
 For setting up the bot and getting the ping, imagine, complete, reminder and music commands up to work you will have to create a config.json with the following form:
